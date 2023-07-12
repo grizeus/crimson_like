@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
-#include <stdexcept>
-// #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 struct SDL_Tools {
     bool ToolsInit();
@@ -13,5 +13,5 @@ struct SDL_Tools {
     
     SDL_Window* m_Window;
     SDL_Renderer* m_Renderer;
-    // TTF_Font* m_Font;
+    TTF_Font* m_Font;
 };
