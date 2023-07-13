@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
 	std::cout << "Hello from crimson game!" << std::endl;
 	while(true) {
 		SDL_RenderClear(tool->m_Renderer);
-		player.Draw();
+		player.Draw("../media/doom.png");
 		SDL_RenderPresent(tool->m_Renderer);
 	}
 	tool->ToolsQuit();

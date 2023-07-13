@@ -1,5 +1,5 @@
 #include "SDL_Tools.h"
-#include <memory>
+#include "Texture.h"
 
 struct Position
 {
@@ -24,14 +24,12 @@ struct Position
     }
 };
 
-using ToolsPtr = std::shared_ptr<SDL_Tools>;
-
 class Drawable {
 public:
     Drawable(ToolsPtr, Position, int, int);
     ~Drawable();
 
-    void Draw();
+    void Draw(const std::string&);
 
     inline const Position& GetPosition() const { return m_Position; }
     inline int GetWidth() const { return m_Width; }
@@ -48,4 +46,5 @@ private:
     int m_Width;
     int m_Height;
     ToolsPtr m_Drawer;
+    Texture* m_Texture;
 };

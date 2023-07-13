@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <memory>
 
 struct SDL_Tools {
     bool ToolsInit();
@@ -15,3 +16,5 @@ struct SDL_Tools {
     SDL_Renderer* m_Renderer;
     TTF_Font* m_Font;
 };
+
+using ToolsPtr = std::shared_ptr<SDL_Tools>;

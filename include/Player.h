@@ -8,7 +8,7 @@ public:
     ~Player();
 
     void Update();
-    void Draw();
+    void Draw(const std::string&);
 
     static const int MaxLives = 3;
     static const int MaxAmmo = 150;
