@@ -4,16 +4,25 @@
 
 
 int main(int argc, char** argv) {
-	// SDL_Tools* tool = new SDL_Tools();
-	ToolsPtr tool = std::make_shared<SDL_Tools>();
-	tool->ToolsInit();
-	Player player(tool);
-	std::cout << "Hello from crimson game!" << std::endl;
-	while(true) {
-		SDL_RenderClear(tool->m_Renderer);
-		player.Draw("../media/doom.png");
-		SDL_RenderPresent(tool->m_Renderer);
+	EnemySpawner spawner;
+	vector<Enemy> enemies;
+	vector<Bullets> bullets;
+	Player player;
+	while(true)
+	{
+
 	}
-	tool->ToolsQuit();
-	return 0;
 }
+/*
+	check and process input;
+	player shoot;
+	spawn enemy;
+	check enemies colision with each other;
+	check enemies colision with bullets;
+	check enemies colision with player;
+	check player HP;
+	move player;
+	move enemy;
+	move bullets;
+	render all;
+*/
