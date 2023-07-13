@@ -1,39 +1,30 @@
-#include "../include/SDL_Tools.h"
+#include "../include/GraphicsSystem.h"
 #include <stdexcept>
 
-bool SDL_Tools::ToolsInit()
-{
+GraphicsSystem::GraphicsSystem(const std::string& name, int width, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
        throw std::runtime_error("SDL failed initialization!\n");
-       return false;
     }
-    if (SDL_CreateWindowAndRenderer(m_WindowWidth, m_WindowHeight, SDL_WINDOW_SHOWN , &m_Window, &m_Renderer) != 0) {
+    if (SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_SHOWN , &m_Window, &m_Renderer) != 0) 
         throw std::runtime_error(SDL_GetError());
-        return false;
-    }
-    SDL_SetWindowTitle(m_Window, "Crimson Game");
+    
+    SDL_SetWindowTitle(m_Window, name.c_str());
     SDL_SetWindowPosition(m_Window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     int imgFlags = IMG_INIT_PNG;
     if (!(IMG_Init(imgFlags) & imgFlags)) {
         throw std::runtime_error(IMG_GetError());
-        return false;
     }
     if (TTF_Init() == -1) {
         throw std::runtime_error(TTF_GetError());
-        return false;
     }
 
     m_Font = TTF_OpenFont("../media/mononoki-Bold.ttf", 18);
-	if (m_Font == NULL) {
+    if (m_Font == NULL) 
         throw std::runtime_error(TTF_GetError());
-        return false;
-    }
-    return true;
 }
 
-void SDL_Tools::ToolsQuit()
-{
+GraphicsSystem::~GraphicsSystem() {
     SDL_DestroyRenderer(m_Renderer);
     SDL_DestroyWindow(m_Window);
     TTF_CloseFont(m_Font);
@@ -45,5 +36,3 @@ void SDL_Tools::ToolsQuit()
     TTF_Quit();
     SDL_Quit();
 }
-
-SDL_Tools::~SDL_Tools() { ToolsQuit(); }
