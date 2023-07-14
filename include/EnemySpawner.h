@@ -1,14 +1,12 @@
 #pragma once
 #include "Enemy.h"
-#include <vector>
+#include <memory>
+
+using EnemyPtr = std::shared_ptr<Enemy>;
 
 class EnemySpawner {
 public:
     EnemySpawner() {}
     ~EnemySpawner() {} 
-    void Spawn(int, int);
-private:
-    std::vector<Position> m_EnemyPositions;
-    std::vector<Direction> m_EnemyDirections;
-    std::vector<CollisionBox> m_EnemyCollisionBoxes;
+    EnemyPtr Spawn(int, int);
 };
