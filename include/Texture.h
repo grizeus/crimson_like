@@ -1,5 +1,5 @@
 #pragma once
-#include "GraphicsSystem.h"
+#include <SDL2/SDL.h> 
 #include <string>
 
 class Texture {

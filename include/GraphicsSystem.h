@@ -4,7 +4,7 @@
 #include <SDL2/SDL_image.h>
 #include <string>
 #include "Texture.h"
-#include "Position.h"
+#include "Orientation.h"
 
 class GraphicsSystem {
 public:

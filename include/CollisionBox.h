@@ -1,14 +1,14 @@
 #pragma once
-#include "Position.h"
+#include "Orientation.h"
 
 struct CollisionBox {
     CollisionBox(int x, int y, int width, int height)
-        : position(x, y)
-        , width(width)
-        , height(height)
+        : m_Position(x, y)
+        , m_Width(width)
+        , m_Height(height)
     {}
 
-    Position position;
-    int width;
-    int height;
+    Position m_Position;
+    int m_Width;
+    int m_Height;
 };
