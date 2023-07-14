@@ -1,4 +1,5 @@
 #include "../include/GraphicsSystem.h"
+#include <SDL2/SDL_render.h>
 #include <stdexcept>
 
 GraphicsSystem::GraphicsSystem(const std::string& name, int width, int height) {
@@ -35,4 +36,9 @@ GraphicsSystem::~GraphicsSystem() {
 
     TTF_Quit();
     SDL_Quit();
+}
+
+void GraphicsSystem::RenderTexture(Texture& texture, Position pos, int width, int height) {
+    SDL_Rect rect = { pos.x, pos.y, width, height };
+    SDL_RenderCopy(m_Renderer, texture.GetTexture(), nullptr, &rect);
 }
