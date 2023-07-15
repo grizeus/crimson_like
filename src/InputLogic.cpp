@@ -46,16 +46,16 @@ Action InputHandler() {
 void InputLogic(Action action, Player& player) {
     switch (action) {
         case MOVE_UP:
-            player.SetDirection(UP);
+            player.Move(UP);
             break;
         case MOVE_DOWN:
-            player.SetDirection(DOWN);
+            player.Move(DOWN);
             break;
         case MOVE_LEFT:
-            player.SetDirection(LEFT);
+            player.Move(LEFT);
             break;
         case MOVE_RIGHT:
-            player.SetDirection(RIGHT);
+            player.Move(RIGHT);
             break;
         case FIRE:
             player.Fire();

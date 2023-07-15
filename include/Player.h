@@ -6,7 +6,7 @@ public:
     Player();
     ~Player();
 
-    void Update();
+    void Move(Direction);
     void Fire();
 
     static const int MaxLives = 3;

@@ -14,5 +14,22 @@ Player::Player()
 Player::~Player()
 {}
 
-void Player::Update()
-{}
+void Player::Move(Direction direction)
+{
+    switch (direction) {
+        case UP:
+            m_Position.y -= m_Speed;
+            break;
+        case DOWN:
+            m_Position.y += m_Speed;
+            break;
+        case LEFT:
+            m_Position.x -= m_Speed;
+            break;
+        case RIGHT:
+            m_Position.x += m_Speed;
+            break;
+        default:
+            break;
+    }
+}
