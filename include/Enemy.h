@@ -1,5 +1,6 @@
 #pragma once
 #include "CollisionBox.h"
+#include <memory>
 
 struct Enemy {
     Enemy();
@@ -12,3 +13,5 @@ struct Enemy {
     int m_Height;
     float m_Speed;
 };
+
+using EnemyPtr = std::shared_ptr<Enemy>;

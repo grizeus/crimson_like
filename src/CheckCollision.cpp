@@ -10,43 +10,42 @@ bool IsCollision(const CollisionBox& box1, const Position& pos1, const Collision
     return false;
 }
 
-void CheckCollision(Player& player, Enemy& enemy) {
-    if (IsCollision(player.GetCollisionBox(), player.GetPosition(), enemy.m_CollisionBox, enemy.m_Position)) {
+void CheckCollision(Player& player, Enemy* enemy) {
+    if (IsCollision(player.GetCollisionBox(), player.GetPosition(), enemy->m_CollisionBox, enemy->m_Position)) {
         player.SetLives(player.GetLives() - 1);
-        player.SetPosition(Position(0, 0));
     }
 }
 
-void CheckCollision(Enemy& enemy1, Enemy& enemy2) {
-    if (IsCollision(enemy1.m_CollisionBox, enemy1.m_Position, enemy2.m_CollisionBox, enemy2.m_Position)) {
-        switch (enemy1.m_Direction) {
+void CheckCollision(Enemy* enemy1, Enemy* enemy2) {
+    if (IsCollision(enemy1->m_CollisionBox, enemy1->m_Position, enemy2->m_CollisionBox, enemy2->m_Position)) {
+        switch (enemy1->m_Direction) {
             case UP:
-                enemy1.m_Direction = DOWN;
+                enemy1->m_Direction = DOWN;
                 break;
             case DOWN:
-                enemy1.m_Direction = UP;
+                enemy1->m_Direction = UP;
                 break;
             case LEFT:
-                enemy1.m_Direction = RIGHT;
+                enemy1->m_Direction = RIGHT;
                 break;
             case RIGHT:
-                enemy1.m_Direction = LEFT;
+                enemy1->m_Direction = LEFT;
                 break;
             default:
                 break;
         }
-        switch (enemy2.m_Direction) {
+        switch (enemy2->m_Direction) {
             case UP:
-                enemy2.m_Direction = DOWN;
+                enemy2->m_Direction = DOWN;
                 break;
             case DOWN:
-                enemy2.m_Direction = UP;
+                enemy2->m_Direction = UP;
                 break;
             case LEFT:
-                enemy2.m_Direction = RIGHT;
+                enemy2->m_Direction = RIGHT;
                 break;
             case RIGHT:
-                enemy2.m_Direction = LEFT;
+                enemy2->m_Direction = LEFT;
                 break;
             default:
                 break;

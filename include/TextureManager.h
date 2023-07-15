@@ -8,6 +8,6 @@ public:
     TextureManager();
     ~TextureManager();
 
-    void LoadFromFile(SDL_Renderer*, Texture&, const std::string&, int, int);
+    void LoadFromFile(SDL_Renderer*, Texture*, const std::string&, int, int);
     void LoadFromRenderedText(SDL_Renderer*, TTF_Font*, Texture&, const std::string&, const SDL_Color&, int, int);
 };

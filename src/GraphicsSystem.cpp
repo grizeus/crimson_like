@@ -42,3 +42,9 @@ void GraphicsSystem::RenderTexture(Texture& texture, Position pos, int width, in
     SDL_Rect rect = { pos.x, pos.y, width, height };
     SDL_RenderCopy(m_Renderer, texture.GetTexture(), nullptr, &rect);
 }
+
+void GraphicsSystem::RenderEnemy(Position pos, int width, int height) {
+    SDL_SetRenderDrawColor(m_Renderer, 0xFF, 0x00, 0x00, 0xFF);
+    SDL_Rect EnemyRect = { pos.x, pos.y, width, height };
+    SDL_RenderFillRect(m_Renderer, &EnemyRect);
+}

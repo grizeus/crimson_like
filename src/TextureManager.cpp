@@ -5,9 +5,9 @@ TextureManager::TextureManager()
 {}
 
 
-void TextureManager::LoadFromFile(SDL_Renderer* renderer, Texture& texture, const std::string& path, int width, int height) {
-    texture.Destroy();
-    SDL_Texture* new_texture = texture.GetTexture();
+void TextureManager::LoadFromFile(SDL_Renderer* renderer, Texture* texture, const std::string& path, int width, int height) {
+    texture->Destroy();
+    SDL_Texture* new_texture = texture->GetTexture();
     SDL_Surface* surface = IMG_Load(path.c_str());
     if (surface == nullptr) 
         throw std::runtime_error("Failed to load image: " + path + " " + IMG_GetError());
@@ -22,7 +22,7 @@ void TextureManager::LoadFromFile(SDL_Renderer* renderer, Texture& texture, cons
         }
         SDL_FreeSurface(surface);
     }
-    texture.SetTexture(new_texture); 
+    texture->SetTexture(new_texture); 
 }
 
 void TextureManager::LoadFromRenderedText(SDL_Renderer* renderer, TTF_Font* font, Texture& texture, const std::string& text, const SDL_Color& color, int width, int height) {

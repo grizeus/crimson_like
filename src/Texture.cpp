@@ -4,6 +4,7 @@
 Texture::Texture()
     : m_Texture(nullptr)
 { }
+
 Texture::Texture(Texture& other) 
     : m_Texture(other.m_Texture)
 { }

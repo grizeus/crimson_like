@@ -6,6 +6,6 @@
 
 bool IsCollision(const CollisionBox&, const Position&, const CollisionBox&, const Position&);
 
-void CheckCollision(Player&, Enemy&);
+void CheckCollision(Player&, Enemy*);
 // void CheckCollision(Enemy&, Bullet&); // TODO: Implement this function
-void CheckCollision(Enemy&, Enemy&);
+void CheckCollision(Enemy*, Enemy*);

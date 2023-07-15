@@ -12,6 +12,7 @@ public:
     ~GraphicsSystem();
 
     void RenderTexture(Texture&, Position, int, int);
+    void RenderEnemy(Position, int, int);
 
     inline SDL_Renderer* GetRenderer() const { return m_Renderer; }
     inline TTF_Font* GetFont() const { return m_Font; }
