@@ -1,11 +1,11 @@
 #pragma once
 
 enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-    Idle = 69
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    IDLE = 69
 };
 
 struct Position {

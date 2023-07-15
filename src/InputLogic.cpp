@@ -1,4 +1,4 @@
-#include "../include/InputHandler.h"
+#include "../include/InputLogic.h"
 
 Action InputHandler() {
     SDL_Event e;
@@ -12,16 +12,16 @@ Action InputHandler() {
                     case SDLK_ESCAPE:
                         break;
                     case SDLK_UP:
-                        return UP;
+                        return MOVE_UP;
                         break;
                     case SDLK_DOWN:
-                        return DOWN;
+                        return MOVE_DOWN;
                         break;
                     case SDLK_LEFT:
-                        return LEFT;
+                        return MOVE_LEFT;
                         break;
                     case SDLK_RIGHT:
-                        return RIGHT;
+                        return MOVE_RIGHT;
                         break;
                     default:
                         break;
@@ -41,4 +41,26 @@ Action InputHandler() {
         }
     }
     return NONE;
+}
+
+void InputLogic(Action action, Player& player) {
+    switch (action) {
+        case MOVE_UP:
+            player.SetDirection(UP);
+            break;
+        case MOVE_DOWN:
+            player.SetDirection(DOWN);
+            break;
+        case MOVE_LEFT:
+            player.SetDirection(LEFT);
+            break;
+        case MOVE_RIGHT:
+            player.SetDirection(RIGHT);
+            break;
+        case FIRE:
+            player.Fire();
+            break;
+        default:
+            break;
+    }
 }

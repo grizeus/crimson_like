@@ -2,7 +2,7 @@
 
 Enemy::Enemy()
     : m_Position(0, 0)
-    , m_Direction(Direction::Idle)
+    , m_Direction(Direction::IDLE)
     , m_CollisionBox(20, 20)
     , m_Width(20)
     , m_Height(20)
