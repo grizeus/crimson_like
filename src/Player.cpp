@@ -33,3 +33,7 @@ void Player::Move(Direction direction)
             break;
     }
 }
+
+void Player::Fire() {
+    // TODO: implement
+}

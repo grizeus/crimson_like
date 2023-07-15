@@ -4,6 +4,8 @@
 TextureManager::TextureManager()
 {}
 
+TextureManager::~TextureManager()
+{}
 
 void TextureManager::LoadFromFile(SDL_Renderer* renderer, Texture* texture, const std::string& path, int width, int height) {
     texture->Destroy();
