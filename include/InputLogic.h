@@ -13,4 +13,4 @@ enum Action {
 };
 
 Action InputHandler();
-void InputLogic(Action, Player&);
+void InputLogic(Player&);

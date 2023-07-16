@@ -29,15 +29,15 @@ int main(int argc, char** argv) {
 	int countedFrames = 0;
 	int frameTicks = 0;
 	float avgFPS = 0;
-	float ticksPerFrame = 1000.0 / 60.0; // 60 FPS
+	const float ticksPerFrame = 1000.0 / 60.0; // 60 FPS
 	timer.Start();
-
+	
 	while(true) {
 		if (InputHandler() == QUIT)
 			break;
-		InputLogic(InputHandler(), player);
-		// if (countedFrames % 60 == 0)
-		enemies.push_back(spawner.Spawn(windowWidth, windowHwight));
+		InputLogic( player );
+		if (countedFrames % 60 == 0)
+			enemies.push_back(spawner.Spawn(windowWidth, windowHwight));
 		std::vector<EnemyPtr>::iterator it;
 		for (it = enemies.begin(); it != enemies.end(); ++it) {
 			for (auto it2 = it + 1; it2 != enemies.end(); ++it2) {

@@ -7,26 +7,6 @@ Action InputHandler() {
             case SDL_QUIT:
                 return QUIT;
                 break;
-            case SDL_KEYDOWN:
-                switch (e.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        break;
-                    case SDLK_w:
-                        return MOVE_UP;
-                        break;
-                    case SDLK_s:
-                        return MOVE_DOWN;
-                        break;
-                    case SDLK_a:
-                        return MOVE_LEFT;
-                        break;
-                    case SDLK_d:
-                        return MOVE_RIGHT;
-                        break;
-                    default:
-                        break;
-                }
-                break;
             case SDL_MOUSEBUTTONDOWN:
                 switch (e.button.button) {
                     case SDL_BUTTON_LEFT:
@@ -43,24 +23,14 @@ Action InputHandler() {
     return NONE;
 }
 
-void InputLogic(Action action, Player& player) {
-    switch (action) {
-        case MOVE_UP:
-            player.Move(UP);
-            break;
-        case MOVE_DOWN:
-            player.Move(DOWN);
-            break;
-        case MOVE_LEFT:
-            player.Move(LEFT);
-            break;
-        case MOVE_RIGHT:
-            player.Move(RIGHT);
-            break;
-        case FIRE:
-            player.Fire();
-            break;
-        default:
-            break;
-    }
+void InputLogic( Player& player) {
+    const Uint8* keys = SDL_GetKeyboardState(nullptr);
+    if (keys[SDL_SCANCODE_W])
+        player.Move(UP);
+    if (keys[SDL_SCANCODE_A])
+        player.Move(LEFT);
+    if (keys[SDL_SCANCODE_S])
+        player.Move(DOWN);
+    if (keys[SDL_SCANCODE_D])
+        player.Move(RIGHT);
 }
