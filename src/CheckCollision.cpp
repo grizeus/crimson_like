@@ -13,6 +13,7 @@ bool IsCollision(const CollisionBox& box1, const Position& pos1, const Collision
 void CheckCollision(Player& player, Enemy* enemy) {
     if (IsCollision(player.GetCollisionBox(), player.GetPosition(), enemy->m_CollisionBox, enemy->m_Position)) {
         player.SetLives(player.GetLives() - 1);
+        enemy->m_HP = 0;
     }
 }
 

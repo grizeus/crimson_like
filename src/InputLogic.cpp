@@ -11,16 +11,16 @@ Action InputHandler() {
                 switch (e.key.keysym.sym) {
                     case SDLK_ESCAPE:
                         break;
-                    case SDLK_UP:
+                    case SDLK_w:
                         return MOVE_UP;
                         break;
-                    case SDLK_DOWN:
+                    case SDLK_s:
                         return MOVE_DOWN;
                         break;
-                    case SDLK_LEFT:
+                    case SDLK_a:
                         return MOVE_LEFT;
                         break;
-                    case SDLK_RIGHT:
+                    case SDLK_d:
                         return MOVE_RIGHT;
                         break;
                     default:

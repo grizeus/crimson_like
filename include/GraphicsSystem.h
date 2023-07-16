@@ -11,7 +11,7 @@ public:
     GraphicsSystem(const std::string& name, int width, int height);
     ~GraphicsSystem();
 
-    void RenderTexture(Texture&, Position, int, int);
+    void RenderTexture(Texture& texture, Position position, int width, int height);
     void RenderEnemy(Position, int, int);
 
     inline SDL_Renderer* GetRenderer() const { return m_Renderer; }

@@ -12,6 +12,7 @@ struct Enemy {
     int m_Width;
     int m_Height;
     float m_Speed;
+    int m_HP;
 };
 
 using EnemyPtr = std::shared_ptr<Enemy>;

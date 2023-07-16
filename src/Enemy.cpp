@@ -6,7 +6,8 @@ Enemy::Enemy()
     , m_CollisionBox(20, 20)
     , m_Width(20)
     , m_Height(20)
-    , m_Speed(1.0f)
+    , m_Speed(2.0f)
+    , m_HP(1)
 {
 }
 

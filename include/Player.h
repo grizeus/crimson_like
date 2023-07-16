@@ -3,7 +3,7 @@
 
 class Player {
 public:
-    Player();
+    Player(int, int);
     ~Player();
 
     void Move(Direction);

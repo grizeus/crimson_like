@@ -1,13 +1,13 @@
 #include "../include/Player.h"
 #include <stdexcept>
 
-Player::Player()
-    : m_Position(0, 0)
-    , m_CollisionBox(20, 20)
+Player::Player(int width, int height)
+    : m_Position(width / 2, height / 2)
+    , m_CollisionBox(100, 100)
     , m_Direction(IDLE)
-    , m_Width(20)
-    , m_Height(20)
-    , m_Speed(0.0f)
+    , m_Width(100)
+    , m_Height(100)
+    , m_Speed(5.0f)
     , m_Lives(MaxLives)
 {}
 
