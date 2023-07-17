@@ -7,6 +7,7 @@
 #include "../include/EnemySpawner.h"
 #include "../include/EnemyAI.h"
 #include "../include/Timer.h"
+#include "../include/BulletSpawner.h"
 // #include "../include/Bullets.h"
 #include <vector>
 
@@ -17,9 +18,10 @@ int main(int argc, char** argv) {
 	GraphicsSystem graphic("Game", windowWidth, windowHwight);
 	TextureManager textureManager;
 	Player player(windowWidth, windowHwight);
-	EnemySpawner spawner;
+	EnemySpawner enemySpawner;
+	BulletSpawner bulletSpawner;
 	std::vector<EnemyPtr> enemies;
-	// vector<Bullets> bullets;
+	std::vector<BulletPtr> bullets;
 	//
 	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png");
@@ -36,30 +38,43 @@ int main(int argc, char** argv) {
 		if (InputHandler() == QUIT)
 			break;
 		InputLogic( player );
-		if (countedFrames % 60 == 0)
-			enemies.push_back(spawner.Spawn(windowWidth, windowHwight));
-		std::vector<EnemyPtr>::iterator it;
-		for (it = enemies.begin(); it != enemies.end(); ++it) {
-			for (auto it2 = it + 1; it2 != enemies.end(); ++it2) {
-				if (it != it2) {
+		// if (countedFrames % 60 == 0)
+		if (InputHandler() == FIRE)
+			bullets.push_back(bulletSpawner.Spawn(player.GetPosition()));
+		enemies.push_back(enemySpawner.Spawn(windowWidth, windowHwight));
+		std::vector<EnemyPtr>::iterator enemyIt;
+		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
+			for (auto it2 = enemyIt + 1; it2 != enemies.end(); ++it2) {
+				if (enemyIt != it2) {
 					// colissions btw enemies
-					CheckCollision(it->get(), it2->get());
+					CheckCollision(enemyIt->get(), it2->get());
 				}
 			}
-			CheckCollision(player, it->get());
-			if (it->get()->m_HP <= 0) {
-				enemies.erase(it);
+			for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
+				// colissions btw enemies and bullets
+				CheckCollision(enemyIt->get(), bulletIt->get());
+				if (bulletIt->get()->m_HP <= 0) {
+					bullets.erase(bulletIt);
+					break;
+				}
+			}
+			CheckCollision(player, enemyIt->get());
+			if (enemyIt->get()->m_HP <= 0) {
+				enemies.erase(enemyIt);
 				break;
 			}
 		}
-		for (it = enemies.begin(); it != enemies.end(); ++it) {
-			MoveToPlayer(*it, player);
+		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
+			MoveToPlayer(*enemyIt, player);
 		}
 		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(graphic.GetRenderer());
 		
-		for (it = enemies.begin(); it != enemies.end(); ++it) {
-			graphic.RenderEnemy((*it)->m_Position, (*it)->m_Width, (*it)->m_Height);
+		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
+			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
+		}
+		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
+			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
 		graphic.RenderTexture(*playerTexture, player.GetPosition(), player.GetWidth(), player.GetHeight()); 
 		SDL_RenderPresent(graphic.GetRenderer());

@@ -19,37 +19,33 @@ void CheckCollision(Player& player, Enemy* enemy) {
 
 void CheckCollision(Enemy* enemy1, Enemy* enemy2) {
     if (IsCollision(enemy1->m_CollisionBox, enemy1->m_Position, enemy2->m_CollisionBox, enemy2->m_Position)) {
-        switch (enemy1->m_Direction) {
-            case UP:
-                enemy1->m_Direction = DOWN;
-                break;
-            case DOWN:
-                enemy1->m_Direction = UP;
-                break;
-            case LEFT:
-                enemy1->m_Direction = RIGHT;
-                break;
-            case RIGHT:
-                enemy1->m_Direction = LEFT;
-                break;
-            default:
-                break;
-        }
-        switch (enemy2->m_Direction) {
-            case UP:
-                enemy2->m_Direction = DOWN;
-                break;
-            case DOWN:
-                enemy2->m_Direction = UP;
-                break;
-            case LEFT:
-                enemy2->m_Direction = RIGHT;
-                break;
-            case RIGHT:
-                enemy2->m_Direction = LEFT;
-                break;
-            default:
-                break;
+        if (enemy1->m_Position.x < enemy2->m_Position.x && enemy1->m_Position.y < enemy2->m_Position.y) {
+            enemy1->m_Position.x -= 1;
+            enemy1->m_Position.y -= 1;
+            enemy2->m_Position.x += 1;
+            enemy2->m_Position.y += 1;
+        } else if (enemy1->m_Position.x < enemy2->m_Position.x && enemy1->m_Position.y > enemy2->m_Position.y) {
+            enemy1->m_Position.x -= 1;
+            enemy1->m_Position.y += 1;
+            enemy2->m_Position.x += 1;
+            enemy2->m_Position.y -= 1;
+        } else if (enemy1->m_Position.x > enemy2->m_Position.x && enemy1->m_Position.y < enemy2->m_Position.y) {
+            enemy1->m_Position.x += 1;
+            enemy1->m_Position.y -= 1;
+            enemy2->m_Position.x -= 1;
+            enemy2->m_Position.y += 1;
+        } else if (enemy1->m_Position.x > enemy2->m_Position.x && enemy1->m_Position.y > enemy2->m_Position.y) {
+            enemy1->m_Position.x += 1;
+            enemy1->m_Position.y += 1;
+            enemy2->m_Position.x -= 1;
+            enemy2->m_Position.y -= 1;
         }
     }
+}
+
+void CheckCollision(Enemy* enemy, Bullet* bullet) {
+   if (IsCollision(enemy->m_CollisionBox, enemy->m_Position, bullet->m_CollisionBox, bullet->m_StartPosition)) {
+       enemy->m_HP -= bullet->m_Damage;
+       bullet->m_HP = 0;
+   }
 }

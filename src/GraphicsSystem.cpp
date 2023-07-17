@@ -49,3 +49,9 @@ void GraphicsSystem::RenderEnemy(Position position, int width, int height) {
     SDL_Rect EnemyRect = { position.x, position.y, width, height };
     SDL_RenderFillRect(m_Renderer, &EnemyRect);
 }
+
+void GraphicsSystem::RenderBullet(Position position, int width, int height) {
+    SDL_SetRenderDrawColor(m_Renderer, 0xFF, 0x00, 0x00, 0xFF);
+    SDL_Rect BulletRect = { position.x, position.y, width, height };
+    SDL_RenderFillRect(m_Renderer, &BulletRect);
+}
