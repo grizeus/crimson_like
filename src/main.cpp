@@ -31,17 +31,17 @@ int main(int argc, char** argv) {
 	int countedFrames = 0;
 	int frameTicks = 0;
 	float avgFPS = 0;
-	const float ticksPerFrame = 1000.0 / 60.0; // 60 FPS
+	const float ticksPerFrame = 1000.0 / 144.0; // 60 FPS
 	timer.Start();
 	
 	while(true) {
 		if (InputHandler() == QUIT)
 			break;
 		InputLogic( player );
-		// if (countedFrames % 60 == 0)
+		if (countedFrames % 144 == 0)
+		enemies.push_back(enemySpawner.Spawn(windowWidth, windowHwight));
 		if (InputHandler() == FIRE)
 			bullets.push_back(bulletSpawner.Spawn(player.GetPosition()));
-		enemies.push_back(enemySpawner.Spawn(windowWidth, windowHwight));
 		std::vector<EnemyPtr>::iterator enemyIt;
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			for (auto it2 = enemyIt + 1; it2 != enemies.end(); ++it2) {

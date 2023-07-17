@@ -3,7 +3,7 @@
 #include <memory>
 
 struct Bullet {
-    Bullet();
+    Bullet(Position startPos, Position finishPos);
     ~Bullet();
 
     Position m_StartPosition;
