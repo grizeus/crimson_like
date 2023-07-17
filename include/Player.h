@@ -3,7 +3,7 @@
 
 class Player {
 public:
-    Player(int, int);
+    Player(int width, int height);
     ~Player();
 
     void Move(Direction);

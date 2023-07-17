@@ -2,4 +2,4 @@
 #include "Enemy.h"
 #include "Player.h"
 
-void MoveToPlayer(EnemyPtr, Player&);
+void MoveToPlayer(EnemyPtr enemy, Player& player);

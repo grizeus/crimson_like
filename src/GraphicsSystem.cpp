@@ -39,13 +39,13 @@ GraphicsSystem::~GraphicsSystem() {
     SDL_Quit();
 }
 
-void GraphicsSystem::RenderTexture(Texture& texture, Position pos, int width, int height) {
-    SDL_Rect rect = { pos.x, pos.y, width, height };
+void GraphicsSystem::RenderTexture(Texture& texture, Position position, int width, int height) {
+    SDL_Rect rect = { position.x, position.y, width, height };
     SDL_RenderCopy(m_Renderer, texture.GetTexture(), nullptr, &rect);
 }
 
-void GraphicsSystem::RenderEnemy(Position pos, int width, int height) {
+void GraphicsSystem::RenderEnemy(Position position, int width, int height) {
     SDL_SetRenderDrawColor(m_Renderer, 0x00, 0x00, 0x00, 0xFF);
-    SDL_Rect EnemyRect = { pos.x, pos.y, width, height };
+    SDL_Rect EnemyRect = { position.x, position.y, width, height };
     SDL_RenderFillRect(m_Renderer, &EnemyRect);
 }

@@ -5,5 +5,5 @@ class EnemySpawner {
 public:
     EnemySpawner() {}
     ~EnemySpawner() {} 
-    EnemyPtr Spawn(int, int);
+    EnemyPtr Spawn(int winWidth, int winHeight);
 };

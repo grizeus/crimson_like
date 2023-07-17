@@ -5,7 +5,7 @@
 class Texture {
 public:
     Texture();
-    Texture(Texture&);
+    Texture(Texture& other);
     ~Texture();
 
     void Destroy();

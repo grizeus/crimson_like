@@ -14,8 +14,7 @@ Player::Player(int width, int height)
 Player::~Player()
 {}
 
-void Player::Move(Direction direction)
-{
+void Player::Move(Direction direction) {
     switch (direction) {
         case UP:
             m_Position.y -= m_Speed;
