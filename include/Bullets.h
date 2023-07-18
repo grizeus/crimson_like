@@ -6,8 +6,10 @@ struct Bullet {
     Bullet(Position startPos, Position finishPos);
     ~Bullet();
 
+    void Move();
+
     Position m_StartPosition;
-    Position m_FinishPosition;
+    Position m_DirectionVector;
     CollisionBox m_CollisionBox;
     int m_Width;
     int m_Height;

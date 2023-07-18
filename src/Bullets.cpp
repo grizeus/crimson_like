@@ -1,8 +1,8 @@
 #include "../include/Bullets.h"
 
-Bullet::Bullet(Position startPos, Position finishPos)
+Bullet::Bullet(Position startPos, Position directionVector)
     : m_StartPosition(startPos)
-    , m_FinishPosition(finishPos)
+    , m_DirectionVector(directionVector)
     , m_CollisionBox(10, 10)
     , m_Width(10)
     , m_Height(10)
@@ -13,3 +13,8 @@ Bullet::Bullet(Position startPos, Position finishPos)
 
 Bullet::~Bullet()
 {}
+
+void Bullet::Move() {
+    m_StartPosition.x += m_DirectionVector.x * m_Speed;
+    m_StartPosition.y += m_DirectionVector.y * m_Speed;
+}

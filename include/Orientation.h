@@ -9,11 +9,11 @@ enum Direction {
 };
 
 struct Position {
-    Position(int x, int y)
+    Position(float x, float y)
         : x(x)
         , y(y)
     {}
 
-    int x;
-    int y;
+    float x;
+    float y;
 };

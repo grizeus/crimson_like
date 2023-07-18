@@ -12,6 +12,7 @@
 #include <vector>
 
 int main(int argc, char** argv) {
+
 	int windowWidth = 1920;
 	int windowHwight = 1080;
 
@@ -22,7 +23,7 @@ int main(int argc, char** argv) {
 	BulletSpawner bulletSpawner;
 	std::vector<EnemyPtr> enemies;
 	std::vector<BulletPtr> bullets;
-	//
+	std::vector<SDL_Event> events;
 	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png");
 	
@@ -33,15 +34,17 @@ int main(int argc, char** argv) {
 	float avgFPS = 0;
 	const float ticksPerFrame = 1000.0 / 144.0; // 60 FPS
 	timer.Start();
-	
 	while(true) {
-		if (InputHandler() == QUIT)
+		InputHandler(events);
+		if (Quit(events))
 			break;
-		InputLogic( player );
-		// if (countedFrames % 144 == 0)
-		enemies.push_back(enemySpawner.Spawn(windowWidth, windowHwight));
-		if (InputHandler() == FIRE)
-			bullets.push_back(bulletSpawner.Spawn(player.GetPosition()));
+		MoveLogic( player );
+		// if (countedFrames % 30 == 0)
+			enemies.push_back(enemySpawner.Spawn(windowWidth, windowHwight));
+		auto bullet = bulletSpawner.Spawn(player.GetPosition(), events);
+		if (bullet)
+			bullets.push_back(bulletSpawner.Spawn(player.GetPosition(), events));
+		events.clear();
 		std::vector<EnemyPtr>::iterator enemyIt;
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			for (auto it2 = enemyIt + 1; it2 != enemies.end(); ++it2) {
@@ -64,6 +67,11 @@ int main(int argc, char** argv) {
 				break;
 			}
 		}
+		std::cout << bullets.size() << std::endl;
+		for (auto& bullet : bullets) {
+
+			bullet->Move();
+		}
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			MoveToPlayer(*enemyIt, player);
 		}
@@ -80,8 +88,8 @@ int main(int argc, char** argv) {
 		SDL_RenderPresent(graphic.GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
-		printf("FPS: %f\n", avgFPS);
-		printf("Vector size: %zu\n", enemies.size());
+		// printf("FPS: %f\n", avgFPS);
+		// printf("Vector size: %zu\n", enemies.size());
 		if (avgFPS > 2000000)
 			avgFPS = 0;
 

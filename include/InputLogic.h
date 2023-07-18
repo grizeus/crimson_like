@@ -14,4 +14,5 @@ enum Action {
 };
 
 void InputHandler(std::vector<SDL_Event>& events);
-void InputLogic(Player& player);
+void MoveLogic(Player& player);
+bool Quit(std::vector<SDL_Event>& events);
