@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 		if (InputHandler() == QUIT)
 			break;
 		InputLogic( player );
-		if (countedFrames % 144 == 0)
+		// if (countedFrames % 144 == 0)
 		enemies.push_back(enemySpawner.Spawn(windowWidth, windowHwight));
 		if (InputHandler() == FIRE)
 			bullets.push_back(bulletSpawner.Spawn(player.GetPosition()));

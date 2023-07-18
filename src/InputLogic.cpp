@@ -1,26 +1,43 @@
 #include "../include/InputLogic.h"
 
-Action InputHandler() {
+void InputHandler(std::vector<SDL_Event>& events) {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
             case SDL_QUIT:
-                return QUIT;
+                events.push_back(e);
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 switch (e.button.button) {
                     case SDL_BUTTON_LEFT:
-                        return FIRE;
+                        events.push_back(e);
                         break;
                     default:
                         break;
                 } 
                 break;
+            case SDL_KEYDOWN:
+                switch (e.key.keysym.sym) {
+                    case SDLK_w:
+                        events.push_back(e);
+                        break;
+                    case SDLK_a:
+                        events.push_back(e);
+                        break;
+                    case SDLK_s:
+                        events.push_back(e);
+                        break;
+                    case SDLK_d:
+                        events.push_back(e);
+                        break;
+                    default:
+                        break;
+                }
+                break;
             default:
                 break;
         }
     }
-    return NONE;
 }
 
 void InputLogic( Player& player) {
