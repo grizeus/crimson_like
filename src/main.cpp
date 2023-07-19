@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 		if (Quit(events))
 			break;
 		MoveLogic( player );
-		// if (countedFrames % 30 == 0)
+		if (countedFrames % 30 == 0)
 			enemies.push_back(enemySpawner.Spawn(windowWidth, windowHwight));
 		auto bullet = bulletSpawner.Spawn(player, events);
 		if (bullet)

@@ -40,18 +40,18 @@ GraphicsSystem::~GraphicsSystem() {
 }
 
 void GraphicsSystem::RenderTexture(Texture& texture, Position position, int width, int height) {
-    SDL_Rect rect = { position.x, position.y, width, height };
+    SDL_Rect rect = { static_cast<int>(position.x), static_cast<int>(position.y), width, height };
     SDL_RenderCopy(m_Renderer, texture.GetTexture(), nullptr, &rect);
 }
 
 void GraphicsSystem::RenderEnemy(Position position, int width, int height) {
     SDL_SetRenderDrawColor(m_Renderer, 0x00, 0x00, 0x00, 0xFF);
-    SDL_Rect EnemyRect = { position.x, position.y, width, height };
+    SDL_Rect EnemyRect = { static_cast<int>(position.x), static_cast<int>(position.y), width, height };
     SDL_RenderFillRect(m_Renderer, &EnemyRect);
 }
 
 void GraphicsSystem::RenderBullet(Position position, int width, int height) {
     SDL_SetRenderDrawColor(m_Renderer, 0xFF, 0x00, 0x00, 0xFF);
-    SDL_Rect BulletRect = { position.x, position.y, width, height };
+    SDL_Rect BulletRect = { static_cast<int>(position.x), static_cast<int>(position.y), width, height };
     SDL_RenderFillRect(m_Renderer, &BulletRect);
 }
