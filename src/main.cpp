@@ -10,6 +10,10 @@
 #include "../include/BulletSpawner.h"
 #include <vector>
 
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_sdl2.h"
+#include "../imgui/imgui_impl_opengl3.h"
+
 int main(int argc, char** argv) {
 
 	int windowWidth = 1920;

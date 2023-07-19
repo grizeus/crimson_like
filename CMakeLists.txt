@@ -13,8 +13,15 @@ find_package(OpenGL REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
 
-file(GLOB SOURCES "${SOURCE_DIR}/*.cpp")
-file(GLOB_RECURSE HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
+file(GLOB SOURCES 
+	"${SOURCE_DIR}/*.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/imgui/*.cpp"
+	)
+
+file(GLOB_RECURSE HEADERS 
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/*.h" 
+	"${CMAKE_CURRENT_SOURCE_DIR}/imgui/*.h" 
+	)
 
 set(CMAKE_BUILD_TYPE Debug)
 
