@@ -8,7 +8,6 @@
 #include "../include/EnemyAI.h"
 #include "../include/Timer.h"
 #include "../include/BulletSpawner.h"
-// #include "../include/Bullets.h"
 #include <vector>
 
 int main(int argc, char** argv) {
@@ -41,9 +40,9 @@ int main(int argc, char** argv) {
 		MoveLogic( player );
 		// if (countedFrames % 30 == 0)
 			enemies.push_back(enemySpawner.Spawn(windowWidth, windowHwight));
-		auto bullet = bulletSpawner.Spawn(player.GetPosition(), events);
+		auto bullet = bulletSpawner.Spawn(player, events);
 		if (bullet)
-			bullets.push_back(bulletSpawner.Spawn(player.GetPosition(), events));
+			bullets.push_back(bulletSpawner.Spawn(player, events));
 		events.clear();
 		std::vector<EnemyPtr>::iterator enemyIt;
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
