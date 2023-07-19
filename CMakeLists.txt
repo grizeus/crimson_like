@@ -19,9 +19,6 @@ set(CMAKE_BUILD_TYPE Debug)
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARY} ${SDL2_TTF_LIBRARIES})
 
-# target_link_libraries(${PROJECT_NAME}_lib ${SDL2_LIBRARIES}) 
-# add_library(${PROJECT_NAME}_lib STATIC ${SOURCES} ${HEADERS})
-
 enable_testing()
 
 add_subdirectory(UT)

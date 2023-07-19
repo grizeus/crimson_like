@@ -49,3 +49,10 @@ void CheckCollision(Enemy* enemy, Bullet* bullet) {
        bullet->m_HP = 0;
    }
 }
+
+void CheckCollision(Bullet* bullet, int winWidth, int winHeight) {
+    if (bullet->m_StartPosition.x < 0 || bullet->m_StartPosition.x > winWidth ||
+        bullet->m_StartPosition.y < 0 || bullet->m_StartPosition.y > winHeight) {
+            bullet->m_HP = 0;
+    }
+}

@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
 		}
 		std::cout << bullets.size() << std::endl;
 		for (auto& bullet : bullets) {
-
+			CheckCollision(bullet.get(), windowWidth, windowHwight);
 			bullet->Move();
 		}
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
