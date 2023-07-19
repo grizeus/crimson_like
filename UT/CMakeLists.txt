@@ -9,7 +9,6 @@ set(Sources
 add_executable(${This} ${Sources})
 target_link_libraries(${This} PUBLIC
     gtest_main
-    crimson_like_lib
 )
 
 add_test(
