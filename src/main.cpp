@@ -10,15 +10,8 @@
 #include "../include/BulletSpawner.h"
 #include <vector>
 
-#include <glbinding/gl/gl.h>
-#include <glbinding/glbinding.h>
 #include "../imgui/imgui_impl_sdl2.h"
 #include "../imgui/imgui_impl_opengl3.h"
-#if defined(IMGUI_IMPL_OPENGL_ES2)
-#include <SDL2/SDL_opengles2.h>
-#else
-#include <SDL2/SDL_opengl.h>
-#endif
 
 int main(int argc, char** argv) {
 
@@ -36,12 +29,6 @@ int main(int argc, char** argv) {
 	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png");
 
-	// create GL context
-	SDL_GLContext glContext = SDL_GL_CreateContext(graphic.GetWindow());
-	if (!glContext)
-		throw std::runtime_error(SDL_GetError());
-
-	glbinding::initialize(nullptr);
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -50,7 +37,7 @@ int main(int argc, char** argv) {
 	
 
 	// Setup Platform/Renderer backends
-	// ImGui_ImplSDL2_InitForOpenGL(graphic.GetWindow(), glContext);
+	// ImGui_ImplSDL2_InitForOpenGL(graphic.GetWindow(), graphic.GetGLContext());
 	// ImGui_ImplOpenGL3_Init();
 	
 	
@@ -127,7 +114,7 @@ int main(int argc, char** argv) {
 		SDL_RenderPresent(graphic.GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
-		// printf("FPS: %f\n", avgFPS);
+		printf("FPS: %f\n", avgFPS);
 		// printf("Vector size: %zu\n", enemies.size());
 		if (avgFPS > 2000000)
 			avgFPS = 0;
@@ -142,7 +129,6 @@ int main(int argc, char** argv) {
 	// ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
-	SDL_GL_DeleteContext(glContext);
 
 	return 0;
 }
