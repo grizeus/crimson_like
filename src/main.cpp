@@ -18,6 +18,8 @@ int main(int argc, char** argv) {
 	int windowWidth = 1920;
 	int windowHwight = 1080;
 
+	int highScore = 0;
+
 	GraphicsSystem graphic("Game", windowWidth, windowHwight);
 	TextureManager textureManager;
 	Player player(windowWidth, windowHwight);
@@ -27,19 +29,15 @@ int main(int argc, char** argv) {
 	std::vector<BulletPtr> bullets;
 	std::vector<SDL_Event> events;
 	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
+	std::shared_ptr<Texture> scoreTexture = std::make_shared<Texture>();
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png");
+	textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0, 0, 0, 0});
 
 	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-	
-
-	// Setup Platform/Renderer backends
-	// ImGui_ImplSDL2_InitForOpenGL(graphic.GetWindow(), graphic.GetGLContext());
-	// ImGui_ImplOpenGL3_Init();
-	
+	// IMGUI_CHECKVERSION();
+	// ImGui::CreateContext();
+	// ImGuiIO& io = ImGui::GetIO(); (void)io;
+	// io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
 	
 	Timer timer;
 	Timer capTimer;
@@ -58,11 +56,9 @@ int main(int argc, char** argv) {
 		auto bullet = bulletSpawner.Spawn(player, events);
 		if (bullet)
 			bullets.push_back(bulletSpawner.Spawn(player, events));
-		// for (const auto &event : events) {
-			// ImGui_ImplSDL2_ProcessEvent(&event);
-		// }
 		events.clear();
 		std::vector<EnemyPtr>::iterator enemyIt;
+		int newHighScore = highScore;
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			for (auto it2 = enemyIt + 1; it2 != enemies.end(); ++it2) {
 				if (enemyIt != it2) {
@@ -80,6 +76,7 @@ int main(int argc, char** argv) {
 			}
 			CheckCollision(player, enemyIt->get());
 			if (enemyIt->get()->m_HP <= 0) {
+				newHighScore += 10;
 				enemies.erase(enemyIt);
 				break;
 			}
@@ -92,21 +89,23 @@ int main(int argc, char** argv) {
 			MoveToPlayer(*enemyIt, player);
 		}
 		// start new frame for imgui
-		// ImGui_ImplOpenGL3_NewFrame();
-		// ImGui_ImplSDL2_NewFrame();
-		ImGui::NewFrame();
-		ImGui::ShowDemoWindow();
+		// ImGui::NewFrame();
+		// ImGui::ShowDemoWindow();
 
 		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(graphic.GetRenderer());
 		
 		// render imgui
-		ImGui::Render();
-		// ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		// ImGui::Render();
 
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
 		}
+		if (newHighScore > highScore) {
+			highScore = newHighScore;
+			textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0, 0, 0, 0});
+		}
+		graphic.RenderTexture(*scoreTexture, {0, 0}, windowWidth / 20 , windowHwight / 30);
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
 			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
@@ -125,10 +124,7 @@ int main(int argc, char** argv) {
 			SDL_Delay(ticksPerFrame - frameTicks);
 	}
 
-	// ImGui_ImplOpenGL3_Shutdown();
-	// ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
-
 
 	return 0;
 }
