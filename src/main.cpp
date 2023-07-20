@@ -10,9 +10,15 @@
 #include "../include/BulletSpawner.h"
 #include <vector>
 
-#include "../imgui/imgui.h"
+#include <glbinding/gl/gl.h>
+#include <glbinding/glbinding.h>
 #include "../imgui/imgui_impl_sdl2.h"
 #include "../imgui/imgui_impl_opengl3.h"
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+#include <SDL2/SDL_opengles2.h>
+#else
+#include <SDL2/SDL_opengl.h>
+#endif
 
 int main(int argc, char** argv) {
 
@@ -29,6 +35,24 @@ int main(int argc, char** argv) {
 	std::vector<SDL_Event> events;
 	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png");
+
+	// create GL context
+	SDL_GLContext glContext = SDL_GL_CreateContext(graphic.GetWindow());
+	if (!glContext)
+		throw std::runtime_error(SDL_GetError());
+
+	glbinding::initialize(nullptr);
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+	
+
+	// Setup Platform/Renderer backends
+	// ImGui_ImplSDL2_InitForOpenGL(graphic.GetWindow(), glContext);
+	// ImGui_ImplOpenGL3_Init();
+	
 	
 	Timer timer;
 	Timer capTimer;
@@ -47,6 +71,9 @@ int main(int argc, char** argv) {
 		auto bullet = bulletSpawner.Spawn(player, events);
 		if (bullet)
 			bullets.push_back(bulletSpawner.Spawn(player, events));
+		// for (const auto &event : events) {
+			// ImGui_ImplSDL2_ProcessEvent(&event);
+		// }
 		events.clear();
 		std::vector<EnemyPtr>::iterator enemyIt;
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
@@ -70,7 +97,6 @@ int main(int argc, char** argv) {
 				break;
 			}
 		}
-		std::cout << bullets.size() << std::endl;
 		for (auto& bullet : bullets) {
 			CheckCollision(bullet.get(), windowWidth, windowHwight);
 			bullet->Move();
@@ -78,9 +104,19 @@ int main(int argc, char** argv) {
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			MoveToPlayer(*enemyIt, player);
 		}
+		// start new frame for imgui
+		// ImGui_ImplOpenGL3_NewFrame();
+		// ImGui_ImplSDL2_NewFrame();
+		ImGui::NewFrame();
+		ImGui::ShowDemoWindow();
+
 		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(graphic.GetRenderer());
 		
+		// render imgui
+		ImGui::Render();
+		// ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
 		}
@@ -101,6 +137,12 @@ int main(int argc, char** argv) {
 		if (frameTicks < ticksPerFrame)
 			SDL_Delay(ticksPerFrame - frameTicks);
 	}
+
+	// ImGui_ImplOpenGL3_Shutdown();
+	// ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
+	SDL_GL_DeleteContext(glContext);
 
 	return 0;
 }
