@@ -13,7 +13,8 @@ class GraphicsSystem {
 public:
     GraphicsSystem(const std::string& name, int width, int height);
     ~GraphicsSystem();
-
+    
+    void InitGL();
     void RenderTexture(Texture& texture, Position position, int width, int height);
     void RenderEnemy(Position position, int width, int height);
     void RenderBullet(Position position, int width, int height);
@@ -27,4 +28,8 @@ private:
     SDL_Renderer* m_Renderer;
     TTF_Font* m_Font;
     SDL_GLContext m_GLContext;
+    GLuint m_ProgramID = 0;
+    GLint m_VertexPos2DLocation = -1;
+    GLuint m_VBO = 0;
+    GLuint m_IBO = 0;
 };

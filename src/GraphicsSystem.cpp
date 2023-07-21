@@ -22,6 +22,10 @@ GraphicsSystem::GraphicsSystem(const std::string& name, int width, int height) {
                 throw std::runtime_error("gl3w failed initialization!\n");
             if (!gl3wIsSupported(3, 2)) 
                 throw std::runtime_error("OpenGL 3.2 not supported!\n");
+            // Vsync
+            if (SDL_GL_SetSwapInterval(1) < 0)
+                throw std::runtime_error(SDL_GetError());
+
             printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
         }
     }
@@ -55,6 +59,95 @@ GraphicsSystem::~GraphicsSystem() {
 
     TTF_Quit();
     SDL_Quit();
+}
+
+void GraphicsSystem::InitGL() {
+    m_ProgramID = glCreateProgram(); 
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+    const char* vertexShaderSource[] = {
+        "#version 140\n"
+        "in vec2 LVertexPos2D;\n"
+        "void main() {\n"
+        "   gl_Position = vec4(LVertexPos2D.x, LVertexPos2D.y, 0, 1);\n"
+        "}\n"
+    };
+
+    glShaderSource(vertexShader, 1, vertexShaderSource, nullptr);
+
+    glCompileShader(vertexShader);
+
+    GLint vertexShaderCompiled = GL_FALSE;
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexShaderCompiled);
+    if (vertexShaderCompiled != GL_TRUE) {
+        printf("Unable to compile vertex shader %d!\n", vertexShader);
+        glDeleteShader(vertexShader);
+        vertexShader = 0;
+    }
+    else {
+        glAttachShader(m_ProgramID, vertexShader);
+
+        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+        const char* fragmentShaderSource[] = {
+            "#version 140\n"
+            "out vec4 LFragment;\n"
+            "void main() {\n"
+            "   LFragment = vec4(1.0, 1.0, 1.0, 1.0);\n"
+            "}\n"
+        };
+
+        glShaderSource(fragmentShader, 1, fragmentShaderSource, nullptr);
+
+        glCompileShader(fragmentShader);
+
+        GLint fragmentShaderCompiled = GL_FALSE;
+        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentShaderCompiled);
+        if (fragmentShaderCompiled != GL_TRUE) {
+            printf("Unable to compile fragment shader %d!\n", fragmentShader);
+            glDeleteShader(fragmentShader);
+            fragmentShader = 0;
+        }
+        else {
+            glAttachShader(m_ProgramID, fragmentShader);
+
+            glLinkProgram(m_ProgramID);
+
+            GLint programSuccess = GL_TRUE;
+            glGetProgramiv(m_ProgramID, GL_LINK_STATUS, &programSuccess);
+            if (programSuccess != GL_TRUE) {
+                printf("Error linking program %d!\n", m_ProgramID);
+                glDeleteProgram(m_ProgramID);
+                m_ProgramID = 0;
+            }
+            else {
+                m_VertexPos2DLocation = glGetAttribLocation(m_ProgramID, "LVertexPos2D");
+                if (m_VertexPos2DLocation == -1) {
+                    printf("LVertexPos2D is not a valid glsl program variable!\n");
+                }
+                else {
+                    glClearColor(0.f, 0.f, 0.f, 1.f);
+
+                    GLfloat vertexData[] = {
+                        -0.5f, -0.5f,
+                         0.5f, -0.5f,
+                         0.5f,  0.5f,
+                        -0.5f,  0.5f
+                    };
+
+                    GLuint indexData[] = { 0, 1, 2, 3 };
+
+                    glGenBuffers(1, &m_VBO);
+                    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+                    glBufferData(GL_ARRAY_BUFFER, 2 * 4 * sizeof(GLfloat), vertexData, GL_STATIC_DRAW);
+
+                    glGenBuffers(1, &m_IBO);
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                }
+            }
+        }
+    }
 }
 
 void GraphicsSystem::RenderTexture(Texture& texture, Position position, int width, int height) {
