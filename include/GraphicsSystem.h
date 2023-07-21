@@ -15,18 +15,18 @@ public:
     ~GraphicsSystem();
     
     void InitGL();
+    void Render();
+    void Update();
+    void HandleKeys(unsigned char key, int x, int y);
     void RenderTexture(Texture& texture, Position position, int width, int height);
     void RenderEnemy(Position position, int width, int height);
     void RenderBullet(Position position, int width, int height);
     
     inline SDL_Window* GetWindow() const { return m_Window; }
-    inline SDL_Renderer* GetRenderer() const { return m_Renderer; }
-    inline TTF_Font* GetFont() const { return m_Font; }
     inline SDL_GLContext GetGLContext() const { return m_GLContext; }
 private:
     SDL_Window* m_Window;
-    SDL_Renderer* m_Renderer;
-    TTF_Font* m_Font;
+    bool m_RenderQuad = true;
     SDL_GLContext m_GLContext;
     GLuint m_ProgramID = 0;
     GLint m_VertexPos2DLocation = -1;

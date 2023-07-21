@@ -30,8 +30,6 @@ int main(int argc, char** argv) {
 	std::vector<SDL_Event> events;
 	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
 	std::shared_ptr<Texture> scoreTexture = std::make_shared<Texture>();
-	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png");
-	textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0, 0, 0, 0});
 
 	// Setup Dear ImGui context
 	// IMGUI_CHECKVERSION();
@@ -92,32 +90,20 @@ int main(int argc, char** argv) {
 		// ImGui::NewFrame();
 		// ImGui::ShowDemoWindow();
 
-		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
-		SDL_RenderClear(graphic.GetRenderer());
 		
 		// render imgui
 		// ImGui::Render();
 
-		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
-			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
-		}
 		if (newHighScore > highScore) {
 			highScore = newHighScore;
-			textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0, 0, 0, 0});
 		}
-		graphic.RenderTexture(*scoreTexture, {0, 0}, windowWidth / 20 , windowHwight / 30);
-		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
-			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
-		}
-		graphic.RenderTexture(*playerTexture, player.GetPosition(), player.GetWidth(), player.GetHeight()); 
-		SDL_RenderPresent(graphic.GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
 		printf("FPS: %f\n", avgFPS);
 		// printf("Vector size: %zu\n", enemies.size());
 		if (avgFPS > 2000000)
 			avgFPS = 0;
-
+		graphic.Render();
 		++countedFrames;
 		frameTicks = capTimer.GetTicks();
 		if (frameTicks < ticksPerFrame)
