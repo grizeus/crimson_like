@@ -10,9 +10,6 @@
 #include "../include/BulletSpawner.h"
 #include <vector>
 
-#include "../imgui/imgui_impl_sdl2.h"
-#include "../imgui/imgui_impl_opengl3.h"
-
 int main(int argc, char** argv) {
 
 	int windowWidth = 1920;
@@ -33,12 +30,6 @@ int main(int argc, char** argv) {
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png");
 	textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0, 0, 0, 0});
 
-	// Setup Dear ImGui context
-	// IMGUI_CHECKVERSION();
-	// ImGui::CreateContext();
-	// ImGuiIO& io = ImGui::GetIO(); (void)io;
-	// io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-	
 	Timer timer;
 	Timer capTimer;
 	int countedFrames = 0;
@@ -88,16 +79,10 @@ int main(int argc, char** argv) {
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			MoveToPlayer(*enemyIt, player);
 		}
-		// start new frame for imgui
-		// ImGui::NewFrame();
-		// ImGui::ShowDemoWindow();
 
 		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(graphic.GetRenderer());
 		
-		// render imgui
-		// ImGui::Render();
-
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
 		}
@@ -123,8 +108,6 @@ int main(int argc, char** argv) {
 		if (frameTicks < ticksPerFrame)
 			SDL_Delay(ticksPerFrame - frameTicks);
 	}
-
-	ImGui::DestroyContext();
 
 	return 0;
 }

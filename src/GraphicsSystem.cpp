@@ -5,26 +5,9 @@ GraphicsSystem::GraphicsSystem(const std::string& name, int width, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
        throw std::runtime_error("SDL failed initialization!\n");
     }
-    else {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    }
     m_Window = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     if (m_Window == nullptr)
         throw std::runtime_error(SDL_GetError());
-    else {
-        m_GLContext = SDL_GL_CreateContext(m_Window);
-        if (!m_GLContext)
-            throw std::runtime_error(SDL_GetError());
-        else {
-            if (gl3wInit())
-                throw std::runtime_error("gl3w failed initialization!\n");
-            if (!gl3wIsSupported(3, 2)) 
-                throw std::runtime_error("OpenGL 3.2 not supported!\n");
-            printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
-        }
-    }
     m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (m_Renderer == nullptr)
         throw std::runtime_error(SDL_GetError());
@@ -46,12 +29,10 @@ GraphicsSystem::~GraphicsSystem() {
     SDL_DestroyRenderer(m_Renderer);
     SDL_DestroyWindow(m_Window);
     TTF_CloseFont(m_Font);
-    SDL_GL_DeleteContext(m_GLContext);
     
     m_Renderer = nullptr;
     m_Window = nullptr;
     m_Font = nullptr;
-    m_GLContext = nullptr;
 
     TTF_Quit();
     SDL_Quit();
