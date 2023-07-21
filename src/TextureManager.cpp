@@ -7,7 +7,7 @@ TextureManager::TextureManager()
 TextureManager::~TextureManager()
 {}
 
-void TextureManager::LoadFromFile(SDL_Renderer* renderer, Texture* texture, const std::string& path) {
+void TextureManager::LoadFromFile(SDL_Renderer* renderer, Texture* texture, const std::string& path, int width, int height) {
     SDL_Texture* newTexture = nullptr;
     SDL_Surface* surface = IMG_Load(path.c_str());
     if (surface == nullptr) 
@@ -18,8 +18,8 @@ void TextureManager::LoadFromFile(SDL_Renderer* renderer, Texture* texture, cons
         if (newTexture == nullptr) 
             throw std::runtime_error("Failed to create texture from surface: " + path + " " + SDL_GetError());
         else {
-            texture->SetWidth(surface->w);
-            texture->SetHeight(surface->h);
+            texture->SetWidth(width);
+            texture->SetHeight(height);
         }
         SDL_FreeSurface(surface);
     }

@@ -11,7 +11,7 @@ public:
     GraphicsSystem(const std::string& name, int width, int height);
     ~GraphicsSystem();
 
-    void RenderTexture(Texture& texture, Position position, int width, int height);
+    void RenderTexture(Texture& texture, Position position, SDL_Rect* clip = nullptr);
     void RenderEnemy(Position position, int width, int height);
     void RenderBullet(Position position, int width, int height);
     

@@ -38,9 +38,13 @@ GraphicsSystem::~GraphicsSystem() {
     SDL_Quit();
 }
 
-void GraphicsSystem::RenderTexture(Texture& texture, Position position, int width, int height) {
-    SDL_Rect rect = { static_cast<int>(position.x), static_cast<int>(position.y), width, height };
-    SDL_RenderCopy(m_Renderer, texture.GetTexture(), nullptr, &rect);
+void GraphicsSystem::RenderTexture(Texture& texture, Position position, SDL_Rect* clip) {
+    SDL_Rect rect = { static_cast<int>(position.x), static_cast<int>(position.y), texture.GetWidth(), texture.GetHeight() };
+    if (clip != nullptr) {
+        rect.w = clip->w;
+        rect.h = clip->h;
+    }
+    SDL_RenderCopyEx(m_Renderer, texture.GetTexture(), clip, &rect, 0.0, nullptr, SDL_FLIP_NONE);
 }
 
 void GraphicsSystem::RenderEnemy(Position position, int width, int height) {

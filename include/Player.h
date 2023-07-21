@@ -7,7 +7,7 @@ public:
     Player(int width, int height);
     ~Player();
 
-    void Move(Direction);
+    void Move(Direction direction, int width, int height);
     void Fire();
 
     static const int MaxLives = 3;

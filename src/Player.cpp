@@ -14,19 +14,27 @@ Player::Player(int width, int height)
 Player::~Player()
 {}
 
-void Player::Move(Direction direction) {
+void Player::Move(Direction direction, int width, int height) {
     switch (direction) {
         case UP:
             m_Position.y -= m_Speed;
+            if (m_Position.y < 0)
+                m_Position.y = 0;
             break;
         case DOWN:
             m_Position.y += m_Speed;
+            if (m_Position.y > height - m_Height)
+                m_Position.y = height - m_Height;
             break;
         case LEFT:
             m_Position.x -= m_Speed;
+            if (m_Position.x < 0)
+                m_Position.x = 0;
             break;
         case RIGHT:
             m_Position.x += m_Speed;
+            if (m_Position.x > width - m_Width)
+                m_Position.x = width - m_Width;
             break;
         default:
             break;

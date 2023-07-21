@@ -40,16 +40,16 @@ void InputHandler(std::vector<SDL_Event>& events) {
     }
 }
 
-void MoveLogic( Player& player) {
+void MoveLogic( Player& player, int levelWidth, int levelHeight) {
     const Uint8* keys = SDL_GetKeyboardState(nullptr);
     if (keys[SDL_SCANCODE_W])
-        player.Move(UP);
+        player.Move(UP, levelWidth, levelHeight);
     if (keys[SDL_SCANCODE_A])
-        player.Move(LEFT);
+        player.Move(LEFT, levelWidth, levelHeight);
     if (keys[SDL_SCANCODE_S])
-        player.Move(DOWN);
+        player.Move(DOWN, levelWidth, levelHeight);
     if (keys[SDL_SCANCODE_D])
-        player.Move(RIGHT);
+        player.Move(RIGHT, levelWidth, levelHeight);
 }
 
 bool Quit(std::vector<SDL_Event>& events) {
