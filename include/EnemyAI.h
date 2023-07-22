@@ -4,4 +4,3 @@
 #include "Bullets.h"
 
 void MoveToPlayer(EnemyPtr enemy, Player& player);
-void ProjectileToPoint(BulletPtr bullet);

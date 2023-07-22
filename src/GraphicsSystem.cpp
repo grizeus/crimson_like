@@ -44,7 +44,7 @@ void GraphicsSystem::RenderTexture(Texture& texture, Position position, SDL_Rect
         rect.w = clip->w;
         rect.h = clip->h;
     }
-    SDL_RenderCopyEx(m_Renderer, texture.GetTexture(), clip, &rect, 0.0, nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopy(m_Renderer, texture.GetTexture(), clip, &rect);
 }
 
 void GraphicsSystem::RenderEnemy(Position position, int width, int height) {

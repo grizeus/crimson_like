@@ -7,7 +7,7 @@ Player::Player(int width, int height)
     , m_Direction(IDLE)
     , m_Width(100)
     , m_Height(100)
-    , m_Speed(5.0f)
+    , m_Speed(10.0f)
     , m_Lives(MaxLives)
 {}
 

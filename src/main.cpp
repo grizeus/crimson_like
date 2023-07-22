@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
 	std::shared_ptr<Texture> bgTexture = std::make_shared<Texture>();
 	std::shared_ptr<Texture> scoreTexture = std::make_shared<Texture>();
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png", player.GetWidth(), player.GetHeight());
-	textureManager.LoadFromFile(graphic.GetRenderer(), bgTexture.get(), "../media/bg.png", LEVEL_WIDTH, LEVEL_HEIGHT);
-	textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0, 0, 0, 0});
+	textureManager.LoadFromFile(graphic.GetRenderer(), bgTexture.get(), "../media/bg.png", WINDOW_WIDTH, WINDOW_HEIGHT);
+	textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 	
 	SDL_Rect camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 
@@ -48,23 +48,6 @@ int main(int argc, char** argv) {
 		if (Quit(events))
 			break;
 		MoveLogic( player, LEVEL_WIDTH, LEVEL_HEIGHT);
-
-		// center camera on player
-		float playerX = player.GetPosition().x;
-		float playerY = player.GetPosition().y;
-		int playerW = player.GetWidth();
-		int playerH = player.GetHeight();
-		camera.x = (static_cast<int>(playerX) + playerW / 2) - WINDOW_WIDTH / 2;
-		camera.y = (static_cast<int>(playerY) + playerH / 2) - WINDOW_HEIGHT / 2;
-		// Keep camera in bounds
-		if (camera.x < 0)
-			camera.x = 0;
-		if (camera.y < 0)
-			camera.y = 0;
-		if (camera.x > LEVEL_WIDTH - camera.w)
-			camera.x = LEVEL_WIDTH - camera.w;
-		if (camera.y > LEVEL_HEIGHT - camera.h)
-			camera.y = LEVEL_HEIGHT - camera.h;
 
 		if (countedFrames % 60 == 0)
 			enemies.push_back(enemySpawner.Spawn(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -104,6 +87,23 @@ int main(int argc, char** argv) {
 			MoveToPlayer(*enemyIt, player);
 		}
 
+		// center camera on player
+		float playerX = player.GetPosition().x;
+		float playerY = player.GetPosition().y;
+		int playerW = player.GetWidth();
+		int playerH = player.GetHeight();
+		camera.x = (static_cast<int>(playerX) + playerW / 2) - WINDOW_WIDTH / 2;
+		camera.y = (static_cast<int>(playerY) + playerH / 2) - WINDOW_HEIGHT / 2;
+		// Keep camera in bounds
+		if (camera.x < 0)
+			camera.x = 0;
+		if (camera.y < 0)
+			camera.y = 0;
+		if (camera.x > LEVEL_WIDTH - camera.w)
+			camera.x = LEVEL_WIDTH - camera.w;
+		if (camera.y > LEVEL_HEIGHT - camera.h)
+			camera.y = LEVEL_HEIGHT - camera.h;
+
 		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(graphic.GetRenderer());
 		
@@ -113,15 +113,14 @@ int main(int argc, char** argv) {
 		}
 		if (newHighScore > highScore) {
 			highScore = newHighScore;
-			textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0, 0, 0, 0});
+			textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 		}
 		graphic.RenderTexture(*scoreTexture, {0, 0});
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
 			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
-		float centredX = playerX - camera.x;
-		float centredY = playerY - camera.y;
-		graphic.RenderTexture(*playerTexture, player.GetPosition());
+
+		graphic.RenderTexture(*playerTexture, {player.GetPosition().x - camera.x, player.GetPosition().y - camera.y});
 		SDL_RenderPresent(graphic.GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
