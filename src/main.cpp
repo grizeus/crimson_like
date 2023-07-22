@@ -115,12 +115,12 @@ int main(int argc, char** argv) {
 			highScore = newHighScore;
 			textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 		}
-		graphic.RenderTexture(*scoreTexture, {0, 0});
+		graphic.RenderTexture(*scoreTexture, {10, 10}, nullptr);
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
 			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
-
-		graphic.RenderTexture(*playerTexture, {player.GetPosition().x - camera.x, player.GetPosition().y - camera.y});
+		
+		graphic.RenderTexture(*playerTexture, {playerX, playerY});
 		SDL_RenderPresent(graphic.GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);

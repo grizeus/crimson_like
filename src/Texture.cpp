@@ -17,8 +17,6 @@ void Texture::Destroy() {
     if (m_Texture != nullptr) {
         SDL_DestroyTexture(m_Texture);
         m_Texture = nullptr;
-        m_Width = 0;
-        m_Height = 0;
     }
 }
 
