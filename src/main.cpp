@@ -29,18 +29,15 @@ int main(int argc, char** argv) {
 
 	std::vector<EnemyPtr> enemies;
 	std::vector<BulletPtr> bullets;
-	bullets.reserve(100);
 	std::vector<SDL_Event> events;
 
 	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
 	std::shared_ptr<Texture> bgTexture = std::make_shared<Texture>();
 	std::shared_ptr<Texture> scoreTexture = std::make_shared<Texture>();
+	std::shared_ptr<Texture> fpsTexture = std::make_shared<Texture>();
 	std::shared_ptr<Texture> finalBgTexture = std::make_shared<Texture>();
-	// finalizing background texture
+	// set final bg texture
 	finalBgTexture->SetTexture( SDL_CreateTexture(graphic.GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, TERRAIN_WIDTH, TERRAIN_HEIGHT));
-	SDL_SetRenderTarget(graphic.GetRenderer(), finalBgTexture->GetTexture());
-	SDL_SetRenderDrawColor(graphic.GetRenderer(), 0x00, 0x00, 0x00, 0x00);
-	SDL_RenderClear(graphic.GetRenderer());
 
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png", player.GetWidth(), player.GetHeight());
 	textureManager.LoadFromFile(graphic.GetRenderer(), bgTexture.get(), "../media/tileset.png", 300, 100);
@@ -58,7 +55,7 @@ int main(int argc, char** argv) {
 	int countedFrames = 0;
 	int frameTicks = 0;
 	float avgFPS = 0;
-	const float ticksPerFrame = 1000.0 / 144.0; // 60 FPS
+	constexpr float ticksPerFrame = 1000.0 / 144.0; // 60 FPS
 	timer.Start();
 
 	while(true) {
@@ -120,9 +117,7 @@ int main(int argc, char** argv) {
 		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(graphic.GetRenderer());
 		
-		terrain.RenderTerrain(&graphic);
-		SDL_SetRenderTarget(graphic.GetRenderer(), nullptr);
-		SDL_RenderCopy(graphic.GetRenderer(), finalBgTexture->GetTexture(), &camera, nullptr /* &destination */);
+		terrain.RenderTerrain(&graphic, finalBgTexture, &camera, TERRAIN_WIDTH, TERRAIN_HEIGHT);
 
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
@@ -131,7 +126,9 @@ int main(int argc, char** argv) {
 			highScore = newHighScore;
 			textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 		}
+		textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), fpsTexture.get(), "Avg FPS: " + std::to_string(avgFPS), {0x0, 0x0, 0x0, 0x0});
 		graphic.RenderTexture(*scoreTexture, {10, 10}, nullptr);
+		graphic.RenderTexture(*fpsTexture, {10, 30}, nullptr);
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
 			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
@@ -154,16 +151,3 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
-/*
-	check and process input;
-	player shoot;
-	spawn enemy;
-	check enemies colision with each other;
-	check enemies colision with bullets;
-	check enemies colision with player;
-	check player HP;
-	move player;
-	move enemy;
-	move bullets;
-	render all;
-*/

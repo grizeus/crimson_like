@@ -12,7 +12,7 @@ public:
     inline void SetTexture(std::shared_ptr<Texture> texture) { m_Texture = texture; }
     void CreateTile(char ID, SDL_Rect coord);
     void LoadMap(const std::string& path);
-    void RenderTerrain(GraphicsSystem* graphic);
+    void RenderTerrain(GraphicsSystem* graphic, std::shared_ptr<Texture> final, SDL_Rect* camera, int width, int height);
 private:
     std::map<char, SDL_Rect> m_Tiles;
     std::vector<SDL_Rect*> m_Terrain;
