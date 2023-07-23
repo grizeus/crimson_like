@@ -13,11 +13,12 @@
 
 int main(int argc, char** argv) {
 	
-	const int LEVEL_WIDTH = 2560;
-	const int LEVEL_HEIGHT = 1440;
-	const int WINDOW_WIDTH = 640;
-	const int WINDOW_HEIGHT = 480;
-
+	const int TERRAIN_WIDTH = 2560;
+	const int TERRAIN_HEIGHT = 1440;
+	const int WINDOW_WIDTH = 1280;
+	const int WINDOW_HEIGHT = 720;
+	int levelWidth, levelHeight;
+	SDL_Rect camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 	int highScore = 0;
 
 	GraphicsSystem graphic("Game", WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -25,16 +26,26 @@ int main(int argc, char** argv) {
 	Player player(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	EnemySpawner enemySpawner;
 	BulletSpawner bulletSpawner;
+
 	std::vector<EnemyPtr> enemies;
 	std::vector<BulletPtr> bullets;
+	bullets.reserve(100);
 	std::vector<SDL_Event> events;
+
 	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
 	std::shared_ptr<Texture> bgTexture = std::make_shared<Texture>();
 	std::shared_ptr<Texture> scoreTexture = std::make_shared<Texture>();
+	std::shared_ptr<Texture> finalBgTexture = std::make_shared<Texture>();
+	// finalizing background texture
+	finalBgTexture->SetTexture( SDL_CreateTexture(graphic.GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, TERRAIN_WIDTH, TERRAIN_HEIGHT));
+	SDL_SetRenderTarget(graphic.GetRenderer(), finalBgTexture->GetTexture());
+	SDL_SetRenderDrawColor(graphic.GetRenderer(), 0x00, 0x00, 0x00, 0x00);
+	SDL_RenderClear(graphic.GetRenderer());
+
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png", player.GetWidth(), player.GetHeight());
 	textureManager.LoadFromFile(graphic.GetRenderer(), bgTexture.get(), "../media/tileset.png", 300, 100);
 	textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
-	
+	SDL_QueryTexture(finalBgTexture->GetTexture(), NULL, NULL, &levelWidth, &levelHeight);
 
 	Terrain terrain(WINDOW_WIDTH, WINDOW_HEIGHT, 100);
 	terrain.CreateTile('a', {0,0,100,100});
@@ -54,13 +65,13 @@ int main(int argc, char** argv) {
 		InputHandler(events);
 		if (Quit(events))
 			break;
-		MoveLogic( player, LEVEL_WIDTH, LEVEL_HEIGHT);
+		MoveLogic( player, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-		if (countedFrames % 60 == 0)
+		if (countedFrames % 15 == 0)
 			enemies.push_back(enemySpawner.Spawn(WINDOW_WIDTH, WINDOW_HEIGHT));
-		auto bullet = bulletSpawner.Spawn(player, events);
-		if (bullet)
-			bullets.push_back(bulletSpawner.Spawn(player, events));
+		auto bullet = bulletSpawner.Spawn(player, events, camera);
+		if (bullet && (bullets.size() < 100))
+			bullets.push_back(bulletSpawner.Spawn(player, events, camera));
 		events.clear();
 		std::vector<EnemyPtr>::iterator enemyIt;
 		int newHighScore = highScore;
@@ -87,18 +98,32 @@ int main(int argc, char** argv) {
 			}
 		}
 		for (auto& bullet : bullets) {
-			CheckCollision(bullet.get(), LEVEL_WIDTH, LEVEL_HEIGHT);
+			CheckCollision(bullet.get(), levelWidth, levelHeight);
 			bullet->Move();
 		}
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
-			MoveToPlayer(*enemyIt, player);
+			MoveTo(*enemyIt, player, camera);
 		}
+
+		camera.x = static_cast<int>(player.GetPosition().x) - (WINDOW_WIDTH / 2);
+		camera.y = static_cast<int>(player.GetPosition().y) - (WINDOW_HEIGHT / 2);
+
+		if (camera.x < 0)
+			camera.x = 0;
+		if (camera.y < 0)
+			camera.y = 0;
+		if (camera.x + camera.w >= levelWidth )
+			camera.x = levelWidth - camera.w;
+		if (camera.y + camera.h >= levelHeight)
+			camera.y = levelHeight - camera.h;
 
 		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(graphic.GetRenderer());
 		
-		// graphic.RenderTexture(*bgTexture, {0, 0}, &camera);
 		terrain.RenderTerrain(&graphic);
+		SDL_SetRenderTarget(graphic.GetRenderer(), nullptr);
+		SDL_RenderCopy(graphic.GetRenderer(), finalBgTexture->GetTexture(), &camera, nullptr /* &destination */);
+
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
 		}
@@ -111,12 +136,12 @@ int main(int argc, char** argv) {
 			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
 		
-		graphic.RenderTexture(*playerTexture, player.GetPosition());
+		graphic.RenderPlayer(*playerTexture, player.GetPosition(), &camera);
 		SDL_RenderPresent(graphic.GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
-		printf("FPS: %f\n", avgFPS);
-		// printf("Vector size: %zu\n", enemies.size());
+		// printf("FPS: %f\n", avgFPS);
+		// printf("enemies vector size : %zu\n", enemies.size());
 		if (avgFPS > 2000000)
 			avgFPS = 0;
 

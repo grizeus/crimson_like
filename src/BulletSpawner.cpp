@@ -1,9 +1,9 @@
 #include "../include/BulletSpawner.h"
 #include <SDL2/SDL.h>
 
-BulletPtr BulletSpawner::Spawn(const Player& player, std::vector<SDL_Event>& events) {
+BulletPtr BulletSpawner::Spawn(const Player& player, std::vector<SDL_Event>& events, const SDL_Rect& camera) {
     BulletPtr bullet = nullptr;
-    float startX = player.GetPosition().x + static_cast<float>(player.GetWidth()) / 2.0f;
+    float startX = player.GetPosition().x + static_cast<float>(player.GetWidth()) / 2.0f - camera.x;
     float startY = player.GetPosition().y + static_cast<float>(player.GetHeight()) / 2.0f;
     for (auto& e : events) {
         if (e.type == SDL_MOUSEBUTTONDOWN)

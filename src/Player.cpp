@@ -24,7 +24,7 @@ void Player::Move(Direction direction, int width, int height) {
         case DOWN:
             m_Position.y += m_Speed;
             if (m_Position.y > height - m_Height)
-                m_Position.y = height - m_Height;
+                m_Position.y = height - m_Height / 2.0f;
             break;
         case LEFT:
             m_Position.x -= m_Speed;
@@ -34,7 +34,7 @@ void Player::Move(Direction direction, int width, int height) {
         case RIGHT:
             m_Position.x += m_Speed;
             if (m_Position.x > width - m_Width)
-                m_Position.x = width - m_Width;
+                m_Position.x = width - m_Width / 2.0f;
             break;
         default:
             break;

@@ -47,6 +47,11 @@ void GraphicsSystem::RenderTexture(Texture& texture, Position position, SDL_Rect
     SDL_RenderCopy(m_Renderer, texture.GetTexture(), clip, &rect);
 }
 
+void GraphicsSystem::RenderPlayer(Texture& texture, Position position, SDL_Rect* camera) {
+    SDL_Rect drawingRect = { static_cast<int>(position.x) - camera->x, static_cast<int>(position.y), texture.GetWidth(), texture.GetHeight() };
+    SDL_RenderCopy(m_Renderer, texture.GetTexture(), nullptr, &drawingRect);
+}
+
 void GraphicsSystem::RenderEnemy(Position position, int width, int height) {
     SDL_SetRenderDrawColor(m_Renderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_Rect EnemyRect = { static_cast<int>(position.x), static_cast<int>(position.y), width, height };

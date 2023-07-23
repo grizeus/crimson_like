@@ -8,5 +8,5 @@ class BulletSpawner {
 public:
     BulletSpawner() {}
     ~BulletSpawner() {} 
-    BulletPtr Spawn(const Player& player, std::vector<SDL_Event>& events);
+    BulletPtr Spawn(const Player& player, std::vector<SDL_Event>& events, const SDL_Rect& camera);
 };

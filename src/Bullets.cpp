@@ -7,7 +7,7 @@ Bullet::Bullet(Position startPos, Position directionVector)
     , m_Width(10)
     , m_Height(10)
     , m_Damage(1)
-    , m_Speed(3.0f)
+    , m_Speed(7.0f)
     , m_HP(1)
 {}
 

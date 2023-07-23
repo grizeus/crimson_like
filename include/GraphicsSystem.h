@@ -12,6 +12,7 @@ public:
     ~GraphicsSystem();
 
     void RenderTexture(Texture& texture, Position position, SDL_Rect* clip = nullptr);
+    void RenderPlayer(Texture& texture, Position position, SDL_Rect* camera);
     void RenderEnemy(Position position, int width, int height);
     void RenderBullet(Position position, int width, int height);
     

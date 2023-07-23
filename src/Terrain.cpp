@@ -5,14 +5,12 @@ Terrain::Terrain(int width, int height, int tile_size)
     : m_Width(width)
     , m_Height(height)
     , m_TileSize(tile_size)
-{}
+{ }
 
 Terrain::~Terrain()
-{
-}
+{ }
 
-void Terrain::CreateTile(char ID, SDL_Rect coord)
-{
+void Terrain::CreateTile(char ID, SDL_Rect coord) {
     m_Tiles[ID] = coord;
 }
 /*
@@ -29,13 +27,11 @@ abccccccccccccccccba
 abbbbbbbbbbbbbbbbbba
 aaaaaaaaaaaaaaaaaaaa
 */
-void Terrain::LoadMap(const std::string& path)
-{
+void Terrain::LoadMap(const std::string& path) {
     std::ifstream file(path.c_str());
     std::string line;
     int h = 0, w = 0, i = 0;
-    while (std::getline(file, line))
-    {
+    while (std::getline(file, line)) {
         if (i == 0) {
             w = std::stoi(line.substr(2));
         }
@@ -54,15 +50,11 @@ void Terrain::LoadMap(const std::string& path)
     }
 }
 
-void Terrain::RenderTerrain(GraphicsSystem* graphic)
-{
+void Terrain::RenderTerrain(GraphicsSystem* graphic) {
     int x = 0, y = 0, i = 0;
 
-    for (auto& tile : m_Terrain)
-    {
-        std::cout << "x " << x << "y " << y << std::endl;
+    for (auto& tile : m_Terrain) {
         SDL_Rect dst = {x, y, m_TileSize, m_TileSize};
-        std::cout << "tile " << tile->x << " " << tile->y << std::endl;
         SDL_RenderCopy(graphic->GetRenderer(), m_Texture->GetTexture(), tile, &dst);
         x += m_TileSize;
         i++;
