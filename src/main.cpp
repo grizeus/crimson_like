@@ -8,6 +8,7 @@
 #include "../include/EnemyAI.h"
 #include "../include/Timer.h"
 #include "../include/BulletSpawner.h"
+#include "../include/Terrain.h"
 #include <vector>
 
 int main(int argc, char** argv) {
@@ -21,7 +22,7 @@ int main(int argc, char** argv) {
 
 	GraphicsSystem graphic("Game", WINDOW_WIDTH, WINDOW_HEIGHT);
 	TextureManager textureManager;
-	Player player(WINDOW_WIDTH, WINDOW_HEIGHT);
+	Player player(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	EnemySpawner enemySpawner;
 	BulletSpawner bulletSpawner;
 	std::vector<EnemyPtr> enemies;
@@ -31,11 +32,16 @@ int main(int argc, char** argv) {
 	std::shared_ptr<Texture> bgTexture = std::make_shared<Texture>();
 	std::shared_ptr<Texture> scoreTexture = std::make_shared<Texture>();
 	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png", player.GetWidth(), player.GetHeight());
-	textureManager.LoadFromFile(graphic.GetRenderer(), bgTexture.get(), "../media/bg.png", WINDOW_WIDTH, WINDOW_HEIGHT);
+	textureManager.LoadFromFile(graphic.GetRenderer(), bgTexture.get(), "../media/tileset.png", 300, 100);
 	textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 	
-	SDL_Rect camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 
+	Terrain terrain(WINDOW_WIDTH, WINDOW_HEIGHT, 100);
+	terrain.CreateTile('a', {0,0,100,100});
+	terrain.CreateTile('b', {100,0,100,100});
+	terrain.CreateTile('c', {200,0,100,100});
+	terrain.LoadMap("../media/map.txt");
+	terrain.SetTexture(bgTexture);
 	Timer timer;
 	Timer capTimer;
 	int countedFrames = 0;
@@ -43,6 +49,7 @@ int main(int argc, char** argv) {
 	float avgFPS = 0;
 	const float ticksPerFrame = 1000.0 / 144.0; // 60 FPS
 	timer.Start();
+
 	while(true) {
 		InputHandler(events);
 		if (Quit(events))
@@ -87,27 +94,11 @@ int main(int argc, char** argv) {
 			MoveToPlayer(*enemyIt, player);
 		}
 
-		// center camera on player
-		float playerX = player.GetPosition().x;
-		float playerY = player.GetPosition().y;
-		int playerW = player.GetWidth();
-		int playerH = player.GetHeight();
-		camera.x = (static_cast<int>(playerX) + playerW / 2) - WINDOW_WIDTH / 2;
-		camera.y = (static_cast<int>(playerY) + playerH / 2) - WINDOW_HEIGHT / 2;
-		// Keep camera in bounds
-		if (camera.x < 0)
-			camera.x = 0;
-		if (camera.y < 0)
-			camera.y = 0;
-		if (camera.x > LEVEL_WIDTH - camera.w)
-			camera.x = LEVEL_WIDTH - camera.w;
-		if (camera.y > LEVEL_HEIGHT - camera.h)
-			camera.y = LEVEL_HEIGHT - camera.h;
-
 		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(graphic.GetRenderer());
 		
-		graphic.RenderTexture(*bgTexture, {0, 0}, &camera);
+		// graphic.RenderTexture(*bgTexture, {0, 0}, &camera);
+		terrain.RenderTerrain(&graphic);
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
 			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
 		}
@@ -120,7 +111,7 @@ int main(int argc, char** argv) {
 			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
 		
-		graphic.RenderTexture(*playerTexture, {playerX, playerY});
+		graphic.RenderTexture(*playerTexture, player.GetPosition());
 		SDL_RenderPresent(graphic.GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
@@ -133,6 +124,7 @@ int main(int argc, char** argv) {
 		frameTicks = capTimer.GetTicks();
 		if (frameTicks < ticksPerFrame)
 			SDL_Delay(ticksPerFrame - frameTicks);
+
 	}
 
 	return 0;

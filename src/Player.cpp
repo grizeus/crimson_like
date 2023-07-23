@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 Player::Player(int width, int height)
-    : m_Position(static_cast<float>(width) / 2.0f, static_cast<float>(height) / 2.0f)
+    : m_Position(static_cast<float>(width), static_cast<float>(height))
     , m_CollisionBox(100, 100)
     , m_Direction(IDLE)
     , m_Width(100)

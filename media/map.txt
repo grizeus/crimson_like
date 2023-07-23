@@ -1,0 +1,7 @@
+w=7
+h=5
+caaaaac
+abbbbba
+abcccba
+abbbbba
+aaaaaaa
