@@ -20,25 +20,25 @@ void CheckCollision(Player& player, Enemy* enemy) {
 void CheckCollision(Enemy* enemy1, Enemy* enemy2) {
     if (IsCollision(enemy1->m_CollisionBox, enemy1->m_Position, enemy2->m_CollisionBox, enemy2->m_Position)) {
         if (enemy1->m_Position.x < enemy2->m_Position.x && enemy1->m_Position.y < enemy2->m_Position.y) {
-            enemy1->m_Position.x -= 1;
-            enemy1->m_Position.y -= 1;
-            enemy2->m_Position.x += 1;
-            enemy2->m_Position.y += 1;
+            enemy1->m_Position.x -= 0.5;
+            enemy1->m_Position.y -= 0.5;
+            enemy2->m_Position.x += 0.5;
+            enemy2->m_Position.y += 0.5;
         } else if (enemy1->m_Position.x < enemy2->m_Position.x && enemy1->m_Position.y > enemy2->m_Position.y) {
-            enemy1->m_Position.x -= 1;
-            enemy1->m_Position.y += 1;
-            enemy2->m_Position.x += 1;
-            enemy2->m_Position.y -= 1;
+            enemy1->m_Position.x -= 0.5;
+            enemy1->m_Position.y += 0.5;
+            enemy2->m_Position.x += 0.5;
+            enemy2->m_Position.y -= 0.5;
         } else if (enemy1->m_Position.x > enemy2->m_Position.x && enemy1->m_Position.y < enemy2->m_Position.y) {
-            enemy1->m_Position.x += 1;
-            enemy1->m_Position.y -= 1;
-            enemy2->m_Position.x -= 1;
-            enemy2->m_Position.y += 1;
+            enemy1->m_Position.x += 0.5;
+            enemy1->m_Position.y -= 0.5;
+            enemy2->m_Position.x -= 0.5;
+            enemy2->m_Position.y += 0.5;
         } else if (enemy1->m_Position.x > enemy2->m_Position.x && enemy1->m_Position.y > enemy2->m_Position.y) {
-            enemy1->m_Position.x += 1;
-            enemy1->m_Position.y += 1;
-            enemy2->m_Position.x -= 1;
-            enemy2->m_Position.y -= 1;
+            enemy1->m_Position.x += 0.5;
+            enemy1->m_Position.y += 0.5;
+            enemy2->m_Position.x -= 0.5;
+            enemy2->m_Position.y -= 0.5;
         }
     }
 }
