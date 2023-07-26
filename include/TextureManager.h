@@ -2,12 +2,27 @@
 #include "Texture.h"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <map>
+#include <set>
+#include "GraphicSystem.h"
+#include <limits>
 
 class TextureManager {
 public:
-    TextureManager();
-    ~TextureManager();
+    TextureManager(TextureManager&) = delete;
+    void operator=(TextureManager&) = delete;
+    static TextureManager* GetInstance();
 
-    void LoadFromFile(SDL_Renderer* renderer, Texture* texture, const std::string& path, int width, int height);
-    void LoadFromRenderedText(SDL_Renderer* renderer, TTF_Font* font, Texture* texture, const std::string& path, const SDL_Color& color);
+    uint32_t Loadtexture(const char* file_path);
+    uint32_t Loadtexture(const char* file_path, uint32_t ID);
+    uint32_t CreateTexture(const char* text, SDL_Color color);
+    uint32_t CreateTexture(const char* text, uint32_t ID, SDL_Color color);
+    void DeleteTexture(uint32_t ID);
+
+    static constexpr uint32_t Error = std::numeric_limits<uint32_t>::max();
+private:
+    TextureManager();
+    static TextureManager* m_Instance;
+    std::map<uint32_t, SDL_Texture*> m_TextureMap;
+    std::set<uint32_t> m_IDSpanes;
 };

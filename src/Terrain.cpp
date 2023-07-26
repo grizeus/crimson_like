@@ -34,7 +34,7 @@ void Terrain::LoadMap(const std::string& path) {
     }
 }
 
-void Terrain::RenderTerrain(GraphicsSystem* graphic, std::shared_ptr<Texture> final, SDL_Rect* camera, int width, int height) {
+void Terrain::RenderTerrain(GraphicSystem* graphic, std::shared_ptr<Texture> final, SDL_Rect* camera, int width, int height) {
     int x = 0, y = 0, i = 0;
     SDL_Renderer* renderer = graphic->GetRenderer();
     SDL_SetRenderTarget(renderer, final->GetTexture());

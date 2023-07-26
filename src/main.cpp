@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../include/GraphicsSystem.h"
+#include "../include/GraphicSystem.h"
 #include "../include/TextureManager.h"
 #include "../include/InputLogic.h"
 #include "../include/CheckCollision.h"
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 	SDL_Rect camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 	int highScore = 0;
 
-	GraphicsSystem graphic("Game", WINDOW_WIDTH, WINDOW_HEIGHT);
+	GraphicSystem graphic("Game", WINDOW_WIDTH, WINDOW_HEIGHT);
 	TextureManager textureManager;
 	Player player(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	EnemySpawner enemySpawner;
