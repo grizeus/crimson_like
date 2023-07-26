@@ -15,9 +15,10 @@ public:
 
     uint32_t Loadtexture(const char* file_path);
     uint32_t Loadtexture(const char* file_path, uint32_t ID);
-    uint32_t CreateTexture(const char* text, SDL_Color color);
-    uint32_t CreateTexture(const char* text, uint32_t ID, SDL_Color color);
+    uint32_t CreateTexture(const std::string& text, SDL_Color color);
+    uint32_t CreateTexture(const std::string& text, uint32_t ID, SDL_Color color);
     void DeleteTexture(uint32_t ID);
+    void Clear();
 
     static constexpr uint32_t Error = std::numeric_limits<uint32_t>::max();
 private:

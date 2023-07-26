@@ -1,6 +1,5 @@
 #include "../include/GraphicSystem.h"
 #include <stdexcept>
-#include <iostream>
 
 SDL_Window* GraphicSystem::m_Window = nullptr;
 SDL_Renderer* GraphicSystem::m_Renderer = nullptr;
@@ -33,7 +32,7 @@ void GraphicSystem::Init(const std::string& name, int width, int height) {
             throw std::runtime_error(TTF_GetError());
     }
     else
-        std::cout << "Program is already init" << std::endl;
+        printf("Program is already init\n");
 }
 
 void GraphicSystem::Clear() {

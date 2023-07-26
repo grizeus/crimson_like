@@ -1,6 +1,5 @@
 #include "../include/TextureManager.h"
 #include <stdexcept>
-#include <iostream>
 
 TextureManager* TextureManager::m_Instance = nullptr;
 
@@ -18,7 +17,7 @@ uint32_t TextureManager::Loadtexture(const char* file_path) {
     SDL_Surface* surface = IMG_Load(file_path);
     if (!surface)
     {
-        std::cout << "Failed load image at " << file_path << std::endl;
+        printf("Failed image load at %s\n", file_path);
         return Error;
     }
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0xFF, 0xFF));
@@ -45,7 +44,7 @@ uint32_t TextureManager::Loadtexture(const char* file_path) {
 uint32_t TextureManager::Loadtexture(const char* file_path, uint32_t ID) {
     SDL_Surface* surface = IMG_Load(file_path);
     if (!surface) {
-        std::cout << "Failed load image at " << file_path << std::endl;
+        printf("Failed image load at %s\n", file_path);
         return Error;
     }
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0xFF, 0xFF));
@@ -65,11 +64,11 @@ uint32_t TextureManager::Loadtexture(const char* file_path, uint32_t ID) {
 }
 
 
-uint32_t TextureManager::CreateTexture(const char* text, SDL_Color color) {
+uint32_t TextureManager::CreateTexture(const std::string& text, SDL_Color color) {
     
-    SDL_Surface* surface = TTF_RenderText_Solid(GraphicSystem::GetFont(), text, color);
+    SDL_Surface* surface = TTF_RenderText_Solid(GraphicSystem::GetFont(), text.c_str(), color);
     if (!surface) {
-        std::cout << "Failed to render text surface from: " << text << std::endl;
+        printf("Failed to render text surface from: %s\n", text.c_str());
         return Error;
     }
     SDL_Texture* texture = SDL_CreateTextureFromSurface(GraphicSystem::GetRenderer(), surface);
@@ -93,10 +92,10 @@ uint32_t TextureManager::CreateTexture(const char* text, SDL_Color color) {
     return Error;
 }
 
-uint32_t TextureManager::CreateTexture(const char* text, uint32_t ID, SDL_Color color) {
-    SDL_Surface* surface = TTF_RenderText_Solid(GraphicSystem::GetFont(), text, color);
+uint32_t TextureManager::CreateTexture(const std::string& text, uint32_t ID, SDL_Color color) {
+    SDL_Surface* surface = TTF_RenderText_Solid(GraphicSystem::GetFont(), text.c_str(), color);
     if (!surface) {
-        std::cout << "Failed to render text surface from: " << text << std::endl;
+        printf("Failed to render text surface from: %s\n", text.c_str());
         return Error;
     }
     SDL_Texture* texture = SDL_CreateTextureFromSurface(GraphicSystem::GetRenderer(), surface);
@@ -120,4 +119,15 @@ void TextureManager::DeleteTexture(uint32_t ID) {
         SDL_DestroyTexture(it->second);
         m_IDSpanes.insert(ID);
     }
+}
+
+void TextureManager::Clear() {
+    if (m_TextureMap.empty())
+        return;
+    for (auto it = m_TextureMap.begin(); it != m_TextureMap.end(); ++it) {
+        SDL_DestroyTexture(it->second);
+    }
+    m_TextureMap.clear();
+    if(!m_IDSpanes.empty())
+        m_IDSpanes.clear();
 }

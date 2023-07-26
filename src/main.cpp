@@ -9,6 +9,7 @@
 #include "../include/Timer.h"
 #include "../include/BulletSpawner.h"
 #include "../include/Terrain.h"
+#include <string>
 #include <vector>
 
 int main(int argc, char** argv) {
@@ -21,8 +22,8 @@ int main(int argc, char** argv) {
 	SDL_Rect camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 	int highScore = 0;
 
-	GraphicSystem graphic("Game", WINDOW_WIDTH, WINDOW_HEIGHT);
-	TextureManager textureManager;
+	GraphicSystem::Init("Game", WINDOW_WIDTH, WINDOW_HEIGHT);
+	auto textureManager = TextureManager::GetInstance();
 	Player player(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	EnemySpawner enemySpawner;
 	BulletSpawner bulletSpawner;
@@ -31,25 +32,15 @@ int main(int argc, char** argv) {
 	std::vector<BulletPtr> bullets;
 	std::vector<SDL_Event> events;
 
-	std::shared_ptr<Texture> playerTexture = std::make_shared<Texture>();
-	std::shared_ptr<Texture> bgTexture = std::make_shared<Texture>();
-	std::shared_ptr<Texture> scoreTexture = std::make_shared<Texture>();
-	std::shared_ptr<Texture> fpsTexture = std::make_shared<Texture>();
-	std::shared_ptr<Texture> finalBgTexture = std::make_shared<Texture>();
-	// set final bg texture
-	finalBgTexture->SetTexture( SDL_CreateTexture(graphic.GetRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, TERRAIN_WIDTH, TERRAIN_HEIGHT));
-
-	textureManager.LoadFromFile(graphic.GetRenderer(), playerTexture.get(), "../media/doom.png", player.GetWidth(), player.GetHeight());
-	textureManager.LoadFromFile(graphic.GetRenderer(), bgTexture.get(), "../media/tileset.png", 300, 100);
-	textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
-	SDL_QueryTexture(finalBgTexture->GetTexture(), NULL, NULL, &levelWidth, &levelHeight);
+	auto playerID = textureManager->Loadtexture("../media/doom.png");
+	auto bgID = textureManager->Loadtexture("../media/tileset.png");
+	auto scoreID = textureManager->CreateTexture("Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 
 	Terrain terrain(WINDOW_WIDTH, WINDOW_HEIGHT, 100);
 	terrain.CreateTile('a', {0,0,100,100});
 	terrain.CreateTile('b', {100,0,100,100});
 	terrain.CreateTile('c', {200,0,100,100});
 	terrain.LoadMap("../media/map.txt");
-	terrain.SetTexture(bgTexture);
 	Timer timer;
 	Timer capTimer;
 	int countedFrames = 0;
@@ -114,27 +105,27 @@ int main(int argc, char** argv) {
 		if (camera.y + camera.h >= levelHeight)
 			camera.y = levelHeight - camera.h;
 
-		SDL_SetRenderDrawColor(graphic.GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
-		SDL_RenderClear(graphic.GetRenderer());
+		SDL_SetRenderDrawColor(GraphicSystem::GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
+		SDL_RenderClear(GraphicSystem::GetRenderer());
 		
-		terrain.RenderTerrain(&graphic, finalBgTexture, &camera, TERRAIN_WIDTH, TERRAIN_HEIGHT);
+		// terrain.RenderTerrain(&graphic, finalBgTexture, &camera, TERRAIN_WIDTH, TERRAIN_HEIGHT);
 
-		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
-			graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
-		}
+		// for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
+		// 	graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
+		// }
 		if (newHighScore > highScore) {
 			highScore = newHighScore;
-			textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), scoreTexture.get(), "Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
+			textureManager->CreateTexture("Score: " + std::to_string(highScore), scoreID, {0x0, 0x0, 0x0, 0x0});
 		}
-		textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), fpsTexture.get(), "Avg FPS: " + std::to_string(avgFPS), {0x0, 0x0, 0x0, 0x0});
-		graphic.RenderTexture(*scoreTexture, {10, 10}, nullptr);
-		graphic.RenderTexture(*fpsTexture, {10, 30}, nullptr);
+		// textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), fpsTexture.get(), "Avg FPS: " + std::to_string(avgFPS), {0x0, 0x0, 0x0, 0x0});
+		// graphic.RenderTexture(*scoreTexture, {10, 10}, nullptr);
+		// graphic.RenderTexture(*fpsTexture, {10, 30}, nullptr);
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
-			graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
+			// graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
 		
-		graphic.RenderPlayer(*playerTexture, player.GetPosition(), &camera);
-		SDL_RenderPresent(graphic.GetRenderer());
+		// graphic.RenderPlayer(*playerTexture, player.GetPosition(), &camera);
+		SDL_RenderPresent(GraphicSystem::GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
 		// printf("FPS: %f\n", avgFPS);
@@ -148,6 +139,8 @@ int main(int argc, char** argv) {
 			SDL_Delay(ticksPerFrame - frameTicks);
 
 	}
+
+	textureManager->Clear();
 
 	return 0;
 }
