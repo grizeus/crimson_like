@@ -14,8 +14,6 @@
 
 int main(int argc, char** argv) {
 	
-	const int TERRAIN_WIDTH = 2560;
-	const int TERRAIN_HEIGHT = 1440;
 	const int WINDOW_WIDTH = 1280;
 	const int WINDOW_HEIGHT = 720;
 	int levelWidth, levelHeight;
@@ -23,20 +21,21 @@ int main(int argc, char** argv) {
 	int highScore = 0;
 
 	GraphicSystem::Init("Game", WINDOW_WIDTH, WINDOW_HEIGHT);
-	auto textureManager = TextureManager::GetInstance();
-	Player player(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+
+	auto playerID = TextureManager::GetInstance()->Loadtexture("../media/doom.png");
+	auto bgID = TextureManager::GetInstance()->Loadtexture("../media/tileset.png");
+	auto enemyID = TextureManager::GetInstance()->Loadtexture("../media/enemy.png");
+	auto scoreID = TextureManager::GetInstance()->CreateTexture("Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
+
+	Terrain terrain(bgID, 100);
+	Player player(terrain.GetWidth() / 2, terrain.GetHeight() / 2);
 	EnemySpawner enemySpawner;
 	BulletSpawner bulletSpawner;
 
 	std::vector<EnemyPtr> enemies;
 	std::vector<BulletPtr> bullets;
 	std::vector<SDL_Event> events;
-
-	auto playerID = textureManager->Loadtexture("../media/doom.png");
-	auto bgID = textureManager->Loadtexture("../media/tileset.png");
-	auto scoreID = textureManager->CreateTexture("Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
-
-	Terrain terrain(WINDOW_WIDTH, WINDOW_HEIGHT, 100);
+	
 	terrain.CreateTile('a', {0,0,100,100});
 	terrain.CreateTile('b', {100,0,100,100});
 	terrain.CreateTile('c', {200,0,100,100});
@@ -53,10 +52,10 @@ int main(int argc, char** argv) {
 		InputHandler(events);
 		if (Quit(events))
 			break;
-		MoveLogic( player, WINDOW_WIDTH, WINDOW_HEIGHT);
+		MoveLogic( player, terrain.GetWidth(), terrain.GetHeight());
 
 		if (countedFrames % 15 == 0)
-			enemies.push_back(enemySpawner.Spawn(WINDOW_WIDTH, WINDOW_HEIGHT));
+			enemies.push_back(enemySpawner.Spawn(terrain.GetWidth(), terrain.GetHeight()));
 		auto bullet = bulletSpawner.Spawn(player, events, camera);
 		if (bullet && (bullets.size() < 100))
 			bullets.push_back(bulletSpawner.Spawn(player, events, camera));
@@ -86,7 +85,7 @@ int main(int argc, char** argv) {
 			}
 		}
 		for (auto& bullet : bullets) {
-			CheckCollision(bullet.get(), levelWidth, levelHeight);
+			CheckCollision(bullet.get(), terrain.GetWidth(), terrain.GetHeight());
 			bullet->Move();
 		}
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
@@ -100,22 +99,23 @@ int main(int argc, char** argv) {
 			camera.x = 0;
 		if (camera.y < 0)
 			camera.y = 0;
-		if (camera.x + camera.w >= levelWidth )
-			camera.x = levelWidth - camera.w;
-		if (camera.y + camera.h >= levelHeight)
-			camera.y = levelHeight - camera.h;
+		if (camera.x + camera.w >= terrain.GetWidth())
+			camera.x = terrain.GetWidth() - camera.w;
+		if (camera.y + camera.h >= terrain.GetHeight())
+			camera.y = terrain.GetHeight() - camera.h;
 
 		SDL_SetRenderDrawColor(GraphicSystem::GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(GraphicSystem::GetRenderer());
 		
-		// terrain.RenderTerrain(&graphic, finalBgTexture, &camera, TERRAIN_WIDTH, TERRAIN_HEIGHT);
+		terrain.RenderTerrain(camera);
 
-		// for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
-		// 	graphic.RenderEnemy((*enemyIt)->m_Position, (*enemyIt)->m_Width, (*enemyIt)->m_Height);
-		// }
+		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
+			SDL_Rect enemyRect = {static_cast<int>((*enemyIt)->m_Position.x), static_cast<int>((*enemyIt)->m_Position.y), (*enemyIt)->m_Width, (*enemyIt)->m_Height};
+			TextureManager::GetInstance()->RenderTexture(enemyID, nullptr, &enemyRect);
+		}
 		if (newHighScore > highScore) {
 			highScore = newHighScore;
-			textureManager->CreateTexture("Score: " + std::to_string(highScore), scoreID, {0x0, 0x0, 0x0, 0x0});
+			TextureManager::GetInstance()->CreateTexture("Score: " + std::to_string(highScore), scoreID, {0x0, 0x0, 0x0, 0x0});
 		}
 		// textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), fpsTexture.get(), "Avg FPS: " + std::to_string(avgFPS), {0x0, 0x0, 0x0, 0x0});
 		// graphic.RenderTexture(*scoreTexture, {10, 10}, nullptr);
@@ -123,8 +123,12 @@ int main(int argc, char** argv) {
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
 			// graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
 		}
-		
-		// graphic.RenderPlayer(*playerTexture, player.GetPosition(), &camera);
+		// std::cout << "Player x " << player.GetPosition().x << " y" << player.GetPosition().y << std::endl;
+		// std::cout << "Camera x " << camera.x << " y" << camera.y << std::endl;
+		SDL_Rect dst = {WINDOW_WIDTH / 2 - player.GetWidth() / 2,
+			WINDOW_HEIGHT / 2 - player.GetHeight() / 2,
+			player.GetWidth(), player.GetHeight()};
+		TextureManager::GetInstance()->RenderTexture(playerID, nullptr, &dst);	
 		SDL_RenderPresent(GraphicSystem::GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
@@ -137,10 +141,9 @@ int main(int argc, char** argv) {
 		frameTicks = capTimer.GetTicks();
 		if (frameTicks < ticksPerFrame)
 			SDL_Delay(ticksPerFrame - frameTicks);
-
 	}
 
-	textureManager->Clear();
+	TextureManager::GetInstance()->Clear();
 
 	return 0;
 }

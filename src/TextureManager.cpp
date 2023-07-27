@@ -113,6 +113,12 @@ uint32_t TextureManager::CreateTexture(const std::string& text, uint32_t ID, SDL
     return ID;
 }
 
+void TextureManager::RenderTexture(uint32_t ID, SDL_Rect* src, SDL_Rect* dst) {
+    auto it = m_TextureMap.find(ID);
+    if (it != m_TextureMap.end() && it->second)
+        SDL_RenderCopy(GraphicSystem::GetRenderer(), it->second, src, dst);
+}
+
 void TextureManager::DeleteTexture(uint32_t ID) {
     auto it = m_TextureMap.find(ID);
     if (it != m_TextureMap.end()) {

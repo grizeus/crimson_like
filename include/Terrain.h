@@ -3,20 +3,24 @@
 #include <map>
 #include "Texture.h"
 #include "GraphicSystem.h"
+#include "TextureManager.h"
+#include "CheckCollision.h"
 #include <memory>
 
 class Terrain {
 public:
-    Terrain(int width, int height, int tile_size);
+    Terrain(uint32_t id, int tile_size);
     ~Terrain();
-    inline void SetTexture(std::shared_ptr<Texture> texture) { m_Texture = texture; }
+    inline void SetTexture(uint32_t id) { m_ID = id; }
     void CreateTile(char ID, SDL_Rect coord);
     void LoadMap(const std::string& path);
-    void RenderTerrain(GraphicSystem* graphic, std::shared_ptr<Texture> final, SDL_Rect* camera, int width, int height);
+    void RenderTerrain(const SDL_Rect& camera);
+    int GetWidth() const;
+    int GetHeight() const;
 private:
     std::map<char, SDL_Rect> m_Tiles;
     std::vector<SDL_Rect*> m_Terrain;
-    std::shared_ptr<Texture> m_Texture;
+    uint32_t m_ID;
     int m_Width;
     int m_Height;
     int m_TileSize;

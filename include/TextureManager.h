@@ -17,6 +17,7 @@ public:
     uint32_t Loadtexture(const char* file_path, uint32_t ID);
     uint32_t CreateTexture(const std::string& text, SDL_Color color);
     uint32_t CreateTexture(const std::string& text, uint32_t ID, SDL_Color color);
+    void RenderTexture(uint32_t ID, SDL_Rect* src = nullptr, SDL_Rect* dst = nullptr);
     void DeleteTexture(uint32_t ID);
     void Clear();
 

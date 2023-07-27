@@ -1,8 +1,16 @@
 #include <gtest/gtest.h>
 #include "../include/TextureManager.h"
 
+using namespace ::testing;
+
 struct TestManager : public ::testing::Test {
 	TextureManager* instance;
+	TestManager() {
+		instance = nullptr;
+	}
+	~TestManager() {
+		delete instance;
+	}
 	void SetUp() override {
 		instance = TextureManager::GetInstance();
 	}
@@ -31,6 +39,10 @@ TEST_F(TestManager, LoadTextureWithID3) {
 	instance->DeleteTexture(1);
 	ID = instance->Loadtexture("../media/doom.png", 1);
 	EXPECT_EQ(ID, 1);
+}
+
+TEST(testing, test1) {
+	EXPECT_EQ(1, 1);
 }
 
 int main (int argc, char** argv) {
