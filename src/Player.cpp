@@ -17,24 +17,20 @@ Player::~Player()
 void Player::Move(Direction direction, int width, int height) {
     switch (direction) {
         case UP:
-            m_Position.y -= m_Speed;
-            if (m_Position.y < 0)
-                m_Position.y = 0;
+            if (m_Position.y > 0)
+                m_Position.y -= m_Speed;
             break;
         case DOWN:
-            m_Position.y += m_Speed;
-            if (m_Position.y > height - m_Height)
-                m_Position.y = height - m_Height / 2.0f;
+            if (m_Position.y < height - m_Height / 2.0f)
+                m_Position.y += m_Speed;
             break;
         case LEFT:
-            m_Position.x -= m_Speed;
-            if (m_Position.x < 0)
-                m_Position.x = 0;
+            if (m_Position.x > 0)
+                m_Position.x -= m_Speed;
             break;
         case RIGHT:
-            m_Position.x += m_Speed;
-            if (m_Position.x > width - m_Width)
-                m_Position.x = width - m_Width / 2.0f;
+            if (m_Position.x < width - m_Width / 2.0f)
+                m_Position.x += m_Speed;
             break;
         default:
             break;

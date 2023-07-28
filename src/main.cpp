@@ -25,6 +25,7 @@ int main(int argc, char** argv) {
 	auto playerID = TextureManager::GetInstance()->Loadtexture("../media/doom.png");
 	auto bgID = TextureManager::GetInstance()->Loadtexture("../media/tileset.png");
 	auto enemyID = TextureManager::GetInstance()->Loadtexture("../media/enemy.png");
+	auto bulletID = TextureManager::GetInstance()->Loadtexture("../media/projectile.png");
 	auto scoreID = TextureManager::GetInstance()->CreateTexture("Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 
 	Terrain terrain(bgID, 100);
@@ -45,6 +46,7 @@ int main(int argc, char** argv) {
 	int countedFrames = 0;
 	int frameTicks = 0;
 	float avgFPS = 0;
+	auto fpsID = TextureManager::GetInstance()->CreateTexture("Avg FPS: " + std::to_string(avgFPS), {0x0, 0x0, 0x0, 0x0});
 	constexpr float ticksPerFrame = 1000.0 / 144.0; // 60 FPS
 	timer.Start();
 
@@ -54,7 +56,7 @@ int main(int argc, char** argv) {
 			break;
 		MoveLogic( player, terrain.GetWidth(), terrain.GetHeight());
 
-		if (countedFrames % 15 == 0)
+		if (countedFrames % 120 == 0)
 			enemies.push_back(enemySpawner.Spawn(terrain.GetWidth(), terrain.GetHeight()));
 		auto bullet = bulletSpawner.Spawn(player, events, camera);
 		if (bullet && (bullets.size() < 100))
@@ -117,11 +119,14 @@ int main(int argc, char** argv) {
 			highScore = newHighScore;
 			TextureManager::GetInstance()->CreateTexture("Score: " + std::to_string(highScore), scoreID, {0x0, 0x0, 0x0, 0x0});
 		}
-		// textureManager.LoadFromRenderedText(graphic.GetRenderer(), graphic.GetFont(), fpsTexture.get(), "Avg FPS: " + std::to_string(avgFPS), {0x0, 0x0, 0x0, 0x0});
-		// graphic.RenderTexture(*scoreTexture, {10, 10}, nullptr);
-		// graphic.RenderTexture(*fpsTexture, {10, 30}, nullptr);
+		TextureManager::GetInstance()->CreateTexture("Avg FPS: " + std::to_string(avgFPS), fpsID, {0x0, 0x0, 0x0, 0x0});
+		SDL_Rect scoreRect = {10, 10, WINDOW_WIDTH / 9, WINDOW_HEIGHT / 72};
+		SDL_Rect fpsRect = {10, 30, WINDOW_WIDTH / 9, WINDOW_HEIGHT / 72};
+		TextureManager::GetInstance()->RenderTexture(scoreID, nullptr, &scoreRect);
+		TextureManager::GetInstance()->RenderTexture(fpsID, nullptr, &fpsRect);
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
-			// graphic.RenderBullet((*bulletIt)->m_StartPosition, (*bulletIt)->m_Width, (*bulletIt)->m_Height);
+			SDL_Rect bulletRect = {static_cast<int>((*bulletIt)->m_StartPosition.x), static_cast<int>((*bulletIt)->m_StartPosition.y), (*bulletIt)->m_Width, (*bulletIt)->m_Height};
+			TextureManager::GetInstance()->RenderTexture(bulletID, nullptr, &bulletRect);
 		}
 		// std::cout << "Player x " << player.GetPosition().x << " y" << player.GetPosition().y << std::endl;
 		// std::cout << "Camera x " << camera.x << " y" << camera.y << std::endl;

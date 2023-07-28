@@ -37,17 +37,12 @@ void Terrain::LoadMap(const std::string& path) {
 void Terrain::RenderTerrain(const SDL_Rect& camera) {
     int x = 0, y = 0;
     for (auto& tile : m_Terrain) {
-        std::cout << x << " " << y;
         if (x >= camera.x && x < camera.x + camera.w && y >= camera.y && y < camera.y + camera.h) {
             SDL_Rect dst = {x, y, m_TileSize, m_TileSize};
             TextureManager::GetInstance()->RenderTexture(m_ID, tile, &dst);
-            std::cout << "! ";
         }
-        else
-            std::cout << "  ";
         x += m_TileSize;
         if (x > m_Width) {
-            std::cout << "\n";
             x = 0;
             y += m_TileSize;
         }

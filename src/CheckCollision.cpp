@@ -45,6 +45,7 @@ void CheckCollision(Enemy* enemy1, Enemy* enemy2) {
 
 void CheckCollision(Enemy* enemy, Bullet* bullet) {
    if (IsCollision(enemy->m_CollisionBox, enemy->m_Position, bullet->m_CollisionBox, bullet->m_StartPosition)) {
+        printf("BOOM!\n");
        enemy->m_HP -= bullet->m_Damage;
        bullet->m_HP = 0;
    }
