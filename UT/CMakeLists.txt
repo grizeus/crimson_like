@@ -1,9 +1,6 @@
-# cmake_minimum_required(VERSION 3.8)
-
 set(This crimson_UT)
 
 set(Sources
-    "../include/TextureManager.h"
     Crimson_UT.cpp
 )
 

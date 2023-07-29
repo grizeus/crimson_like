@@ -17,7 +17,7 @@ Player::~Player()
 void Player::Move(Direction direction, int width, int height) {
     switch (direction) {
         case UP:
-            if (m_Position.y > 0)
+            if (m_Position.y - m_Height / 2.0f > 0)
                 m_Position.y -= m_Speed;
             break;
         case DOWN:
@@ -25,7 +25,7 @@ void Player::Move(Direction direction, int width, int height) {
                 m_Position.y += m_Speed;
             break;
         case LEFT:
-            if (m_Position.x > 0)
+            if (m_Position.x - m_Width / 2.0f > 0)
                 m_Position.x -= m_Speed;
             break;
         case RIGHT:

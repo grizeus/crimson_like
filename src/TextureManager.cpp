@@ -128,12 +128,12 @@ void TextureManager::DeleteTexture(uint32_t ID) {
 }
 
 void TextureManager::Clear() {
+    if(!m_IDSpanes.empty())
+        m_IDSpanes.clear();
     if (m_TextureMap.empty())
         return;
     for (auto it = m_TextureMap.begin(); it != m_TextureMap.end(); ++it) {
         SDL_DestroyTexture(it->second);
     }
     m_TextureMap.clear();
-    if(!m_IDSpanes.empty())
-        m_IDSpanes.clear();
 }

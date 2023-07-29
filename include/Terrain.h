@@ -15,6 +15,7 @@ public:
     void CreateTile(char ID, SDL_Rect coord);
     void LoadMap(const std::string& path);
     void RenderTerrain(const SDL_Rect& camera);
+    void Clear();
     int GetWidth() const;
     int GetHeight() const;
 private:

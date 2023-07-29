@@ -3,4 +3,4 @@
 #include "Player.h"
 #include "Bullets.h"
 
-void MoveTo(EnemyPtr enemy, Player& player, const SDL_Rect& camera);
+void MoveTo(EnemyPtr enemy, Player& player);

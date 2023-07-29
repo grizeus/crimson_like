@@ -16,7 +16,6 @@ int main(int argc, char** argv) {
 	
 	const int WINDOW_WIDTH = 1280;
 	const int WINDOW_HEIGHT = 720;
-	int levelWidth, levelHeight;
 	SDL_Rect camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 	int highScore = 0;
 
@@ -29,18 +28,22 @@ int main(int argc, char** argv) {
 	auto scoreID = TextureManager::GetInstance()->CreateTexture("Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 
 	Terrain terrain(bgID, 100);
-	Player player(terrain.GetWidth() / 2, terrain.GetHeight() / 2);
+	terrain.CreateTile('a', {0,0,100,100});
+	terrain.CreateTile('b', {100,0,100,100});
+	terrain.CreateTile('c', {200,0,100,100});
+	terrain.LoadMap("../media/map.txt");
+
+	Player player( terrain.GetWidth() / 2.0f, terrain.GetHeight() / 2.0f);
 	EnemySpawner enemySpawner;
 	BulletSpawner bulletSpawner;
 
 	std::vector<EnemyPtr> enemies;
 	std::vector<BulletPtr> bullets;
 	std::vector<SDL_Event> events;
+
+	SDL_Rect scoreRect = {10, 10, WINDOW_WIDTH / 9, WINDOW_HEIGHT / 72};
+	SDL_Rect fpsRect = {10, 30, WINDOW_WIDTH / 9, WINDOW_HEIGHT / 72};
 	
-	terrain.CreateTile('a', {0,0,100,100});
-	terrain.CreateTile('b', {100,0,100,100});
-	terrain.CreateTile('c', {200,0,100,100});
-	terrain.LoadMap("../media/map.txt");
 	Timer timer;
 	Timer capTimer;
 	int countedFrames = 0;
@@ -91,20 +94,11 @@ int main(int argc, char** argv) {
 			bullet->Move();
 		}
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
-			MoveTo(*enemyIt, player, camera);
+			MoveTo(*enemyIt, player);
 		}
 
 		camera.x = static_cast<int>(player.GetPosition().x) - (WINDOW_WIDTH / 2);
 		camera.y = static_cast<int>(player.GetPosition().y) - (WINDOW_HEIGHT / 2);
-
-		if (camera.x < 0)
-			camera.x = 0;
-		if (camera.y < 0)
-			camera.y = 0;
-		if (camera.x + camera.w >= terrain.GetWidth())
-			camera.x = terrain.GetWidth() - camera.w;
-		if (camera.y + camera.h >= terrain.GetHeight())
-			camera.y = terrain.GetHeight() - camera.h;
 
 		SDL_SetRenderDrawColor(GraphicSystem::GetRenderer(), 0xFF, 0xC0, 0xCF, 0xFF);
 		SDL_RenderClear(GraphicSystem::GetRenderer());
@@ -112,7 +106,9 @@ int main(int argc, char** argv) {
 		terrain.RenderTerrain(camera);
 
 		for (enemyIt = enemies.begin(); enemyIt != enemies.end(); ++enemyIt) {
-			SDL_Rect enemyRect = {static_cast<int>((*enemyIt)->m_Position.x), static_cast<int>((*enemyIt)->m_Position.y), (*enemyIt)->m_Width, (*enemyIt)->m_Height};
+			SDL_Rect enemyRect = {static_cast<int>((*enemyIt)->m_Position.x - (*enemyIt)->m_Width / 2.0f - camera.x)
+				, static_cast<int>((*enemyIt)->m_Position.y - (*enemyIt)->m_Height / 2.0f - camera.y)
+				, (*enemyIt)->m_Width, (*enemyIt)->m_Height};
 			TextureManager::GetInstance()->RenderTexture(enemyID, nullptr, &enemyRect);
 		}
 		if (newHighScore > highScore) {
@@ -120,25 +116,23 @@ int main(int argc, char** argv) {
 			TextureManager::GetInstance()->CreateTexture("Score: " + std::to_string(highScore), scoreID, {0x0, 0x0, 0x0, 0x0});
 		}
 		TextureManager::GetInstance()->CreateTexture("Avg FPS: " + std::to_string(avgFPS), fpsID, {0x0, 0x0, 0x0, 0x0});
-		SDL_Rect scoreRect = {10, 10, WINDOW_WIDTH / 9, WINDOW_HEIGHT / 72};
-		SDL_Rect fpsRect = {10, 30, WINDOW_WIDTH / 9, WINDOW_HEIGHT / 72};
 		TextureManager::GetInstance()->RenderTexture(scoreID, nullptr, &scoreRect);
 		TextureManager::GetInstance()->RenderTexture(fpsID, nullptr, &fpsRect);
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end(); ++bulletIt) {
-			SDL_Rect bulletRect = {static_cast<int>((*bulletIt)->m_StartPosition.x), static_cast<int>((*bulletIt)->m_StartPosition.y), (*bulletIt)->m_Width, (*bulletIt)->m_Height};
+			SDL_Rect bulletRect = {static_cast<int>((*bulletIt)->m_StartPosition.x - camera.x)
+				, static_cast<int>((*bulletIt)->m_StartPosition.y - camera.y)
+				, (*bulletIt)->m_Width, (*bulletIt)->m_Height};
 			TextureManager::GetInstance()->RenderTexture(bulletID, nullptr, &bulletRect);
 		}
-		// std::cout << "Player x " << player.GetPosition().x << " y" << player.GetPosition().y << std::endl;
-		// std::cout << "Camera x " << camera.x << " y" << camera.y << std::endl;
-		SDL_Rect dst = {WINDOW_WIDTH / 2 - player.GetWidth() / 2,
-			WINDOW_HEIGHT / 2 - player.GetHeight() / 2,
-			player.GetWidth(), player.GetHeight()};
+		std::cout << "Player x " << player.GetPosition().x << " y " << player.GetPosition().y << std::endl;
+		std::cout << "Camera x " << camera.x << " y " << camera.y << std::endl;
+		SDL_Rect dst = {WINDOW_WIDTH / 2 - player.GetWidth() / 2
+			, WINDOW_HEIGHT / 2 - player.GetHeight() / 2
+			, player.GetWidth(), player.GetHeight()};
 		TextureManager::GetInstance()->RenderTexture(playerID, nullptr, &dst);	
 		SDL_RenderPresent(GraphicSystem::GetRenderer());
 
 		avgFPS = countedFrames / (timer.GetTicks() / 1000.f);
-		// printf("FPS: %f\n", avgFPS);
-		// printf("enemies vector size : %zu\n", enemies.size());
 		if (avgFPS > 2000000)
 			avgFPS = 0;
 
@@ -147,8 +141,10 @@ int main(int argc, char** argv) {
 		if (frameTicks < ticksPerFrame)
 			SDL_Delay(ticksPerFrame - frameTicks);
 	}
-
+	
+	terrain.Clear(); // TODO segfault here
 	TextureManager::GetInstance()->Clear();
+	GraphicSystem::Clear();
 
 	return 0;
 }
