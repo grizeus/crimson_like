@@ -1,5 +1,5 @@
 #include "../include/BulletSpawner.h"
-#include <SDL2/SDL.h>
+#include <cmath>
 
 BulletPtr BulletSpawner::Spawn(const Player& player, std::vector<SDL_Event>& events, const SDL_Rect& camera) {
     BulletPtr bullet = nullptr;

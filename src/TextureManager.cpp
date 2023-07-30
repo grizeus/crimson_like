@@ -33,7 +33,7 @@ uint32_t TextureManager::Loadtexture(const char* file_path) {
         m_IDSpanes.erase(spanesIt);
     }
     else
-        ID = m_TextureMap.size();
+        ID = static_cast<uint32_t>(m_TextureMap.size());
     
     auto [it,success] = m_TextureMap.insert({ID, texture});
     if (success)
@@ -84,7 +84,7 @@ uint32_t TextureManager::CreateTexture(const std::string& text, SDL_Color color)
         m_IDSpanes.erase(spanesIt);
     }
     else
-        ID = m_TextureMap.size();
+        ID = static_cast<uint32_t>(m_TextureMap.size());
     
     auto [it,success] = m_TextureMap.insert({ID, texture});
     if (success)

@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 	terrain.CreateTile('c', {200,0,100,100});
 	terrain.LoadMap("../media/map.txt");
 
-	Player player( terrain.GetWidth() / 2.0f, terrain.GetHeight() / 2.0f);
+	Player player(terrain.GetWidth() / 2, terrain.GetHeight() / 2);
 	EnemySpawner enemySpawner;
 	BulletSpawner bulletSpawner;
 
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 	int frameTicks = 0;
 	float avgFPS = 0;
 	auto fpsID = TextureManager::GetInstance()->CreateTexture("Avg FPS: " + std::to_string(avgFPS), {0x0, 0x0, 0x0, 0x0});
-	constexpr float ticksPerFrame = 1000.0 / 144.0; // 60 FPS
+	constexpr float ticksPerFrame = 1000.0f / 144.0f; // 60 FPS
 	timer.Start();
 
 	while(true) {
@@ -124,8 +124,6 @@ int main(int argc, char** argv) {
 				, (*bulletIt)->m_Width, (*bulletIt)->m_Height};
 			TextureManager::GetInstance()->RenderTexture(bulletID, nullptr, &bulletRect);
 		}
-		std::cout << "Player x " << player.GetPosition().x << " y " << player.GetPosition().y << std::endl;
-		std::cout << "Camera x " << camera.x << " y " << camera.y << std::endl;
 		SDL_Rect dst = {WINDOW_WIDTH / 2 - player.GetWidth() / 2
 			, WINDOW_HEIGHT / 2 - player.GetHeight() / 2
 			, player.GetWidth(), player.GetHeight()};
@@ -139,7 +137,7 @@ int main(int argc, char** argv) {
 		++countedFrames;
 		frameTicks = capTimer.GetTicks();
 		if (frameTicks < ticksPerFrame)
-			SDL_Delay(ticksPerFrame - frameTicks);
+			SDL_Delay(static_cast<uint32_t>(ticksPerFrame) - static_cast<uint32_t>(frameTicks));
 	}
 	
 	terrain.Clear(); // TODO segfault here

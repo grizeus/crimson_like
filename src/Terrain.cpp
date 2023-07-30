@@ -17,7 +17,7 @@ void Terrain::CreateTile(char ID, SDL_Rect coord) {
 }
 
 void Terrain::LoadMap(const std::string& path) {
-    std::ifstream file(path.c_str());
+    std::ifstream file(path);
     std::string line;
     int i = 0;
     while (std::getline(file, line)) {
@@ -33,6 +33,7 @@ void Terrain::LoadMap(const std::string& path) {
         }
         i++;
     }
+    file.close();
 }
 
 void Terrain::RenderTerrain(const SDL_Rect& camera) {
@@ -51,12 +52,6 @@ void Terrain::RenderTerrain(const SDL_Rect& camera) {
 }
 
 void Terrain::Clear() {
-    if (m_Terrain.empty())
-        return;
-    for (auto it = m_Terrain.begin(); it != m_Terrain.end(); ++it) {
-        delete *it;
-        *it = nullptr;
-    }
     m_Terrain.clear();
 }
 
