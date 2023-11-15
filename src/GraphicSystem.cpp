@@ -27,7 +27,7 @@ void GraphicSystem::Init(const std::string& name, int width, int height) {
             throw std::runtime_error(TTF_GetError());
         }
 
-        m_Font = TTF_OpenFont("../media/mononoki-Bold.ttf", 18);
+        m_Font = TTF_OpenFont("media/mononoki-Bold.ttf", 18);
         if (m_Font == NULL)
             throw std::runtime_error(TTF_GetError());
     }

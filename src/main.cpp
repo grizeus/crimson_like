@@ -21,17 +21,17 @@ int main(int argc, char** argv) {
 
 	GraphicSystem::Init("Game", WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	auto playerID = TextureManager::GetInstance()->Loadtexture("../media/doom.png");
-	auto bgID = TextureManager::GetInstance()->Loadtexture("../media/tileset.png");
-	auto enemyID = TextureManager::GetInstance()->Loadtexture("../media/enemy.png");
-	auto bulletID = TextureManager::GetInstance()->Loadtexture("../media/projectile.png");
+	auto playerID = TextureManager::GetInstance()->Loadtexture("media/doom.png");
+	auto bgID = TextureManager::GetInstance()->Loadtexture("media/tileset.png");
+	auto enemyID = TextureManager::GetInstance()->Loadtexture("media/enemy.png");
+	auto bulletID = TextureManager::GetInstance()->Loadtexture("media/projectile.png");
 	auto scoreID = TextureManager::GetInstance()->CreateTexture("Score: " + std::to_string(highScore), {0x0, 0x0, 0x0, 0x0});
 
 	Terrain terrain(bgID, 100);
 	terrain.CreateTile('a', {0,0,100,100});
 	terrain.CreateTile('b', {100,0,100,100});
 	terrain.CreateTile('c', {200,0,100,100});
-	terrain.LoadMap("../media/map.txt");
+	terrain.LoadMap("media/map.txt");
 
 	Player player(terrain.GetWidth() / 2, terrain.GetHeight() / 2);
 	EnemySpawner enemySpawner;

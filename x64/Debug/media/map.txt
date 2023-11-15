@@ -1,0 +1,11 @@
+w=21
+h=9
+ababaababaababaabaaba
+abbbbbaababaababbcccc
+abccccccbbbaaaaaaaaaa
+abcccaaaaaaaaaaaaaaaa
+abbbbaaaaaaaaaaaaaaac
+abbbbbaababaababbcccc
+abccccccbbbaaaaaaaaaa
+abcccaaaaaaaaaaaaaaaa
+abbbbaaaaaaaaaaaaaaac

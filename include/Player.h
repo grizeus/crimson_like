@@ -1,7 +1,7 @@
 #pragma once
 #include "Bullets.h"
 #include "CollisionBox.h"
-#include "SDL2/SDL.h"
+#include "SDL.h"
 #include <vector>
 
 class Player {
